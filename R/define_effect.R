@@ -1,4 +1,4 @@
-#' Define the Effect
+#' Define Effect and Effect Difference
 #'
 #' The function will store values for effect, individual ID, and treatment to be used in other functions. Will evaluate the treatment difference
 #' based on values given.

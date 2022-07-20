@@ -1,14 +1,15 @@
-#' Define the Cost
+#' Define Cost and Cost Difference
 #'
-#' Define the vector used for the values to measure effect.
+#' The function will store values for cost, individual ID, and treatment to be used in other functions. Will evaluate the treatment difference
+#' based on values given.
 #'
-#' Function will
+#' A simple linear regression will evaluate the difference in effect between treatment status.
 #'
-#' @param cost Vector of numerical values referring to cost
-#' @param id Vector of numerical values referring to individual ID
-#' @param tx Vector referring to the different treatment values associated with each individual ID
+#' @param cost Vector of effect values
+#' @param id Vector of individual ID
+#' @param tx Vector referring to the different treatment value associated with each individual ID (should be 2 different values)
 #'
-#' @return A data frame of a cost values associated to an individual ID
+#' @return A [lm()] object
 #' @export
 #'
 #' @examples
@@ -19,7 +20,7 @@ define_cost <- function(cost, id, tx){
   ## if cost & id not same length
   ## if id values not numerical
   ## perform linear regression
-  data_effect <- data.frame(effect = effect, id = id, tx = tx)
-  final_model <- lm(effect~tx, data = data_effect)
+  data_effect <- data.frame(cost = cost, id = id, tx = tx)
+  final_model <- lm(cost~tx, data = data_effect)
 
 }
