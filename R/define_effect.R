@@ -1,4 +1,4 @@
-#' Define Effect and Effect Difference
+#' Define Effect and Incremental Effect Difference
 #'
 #' The function will store values for effect, individual ID, and treatment to be used in other functions. Will evaluate the treatment difference
 #' based on values given.
@@ -24,7 +24,29 @@ define_effect <- function(effect, id, tx){
   final_model <- lm(effect~tx, data = data_effect)
 }
 
-## format of print:
-## regression values
-## incremental effect difference
-## plot.effect <- type ("regression diagnostics", "barchart")
+#' Summarise Define Effect Results
+#'
+#' @return
+#' @export
+#'
+#' @examples
+print.define_effect <- function (object, ...){
+  ## format of print:
+  ## regression values
+  ## incremental effect difference
+}
+
+#' Plot Define Effect Results
+#'
+#' @param object A result of [define_effect()]
+#' @param type Type of plot
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot.define_effect <- function (object, type = c("regression diagnositics", "barchart")){
+
+}
+
+

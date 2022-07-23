@@ -1,4 +1,4 @@
-#' Define Cost and Cost Difference
+#' Define Cost and Incremental Cost Difference
 #'
 #' The function will store values for cost, individual ID, and treatment to be used in other functions. Will evaluate the treatment difference
 #' based on values given.
@@ -22,5 +22,30 @@ define_cost <- function(cost, id, tx){
   ## perform linear regression
   data_effect <- data.frame(cost = cost, id = id, tx = tx)
   final_model <- lm(cost~tx, data = data_effect)
+
+}
+
+#' Summarise Define Cost Results
+#'
+#' @return
+#' @export
+#'
+#' @examples
+print.define_cost <- function (object, ...){
+  ## format of print:
+  ## regression values
+  ## incremental effect difference
+}
+
+#' Plot Define Cost Results
+#'
+#' @param object A result of [define_cost()]
+#' @param type Type of plot
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot.define_cost <- function (object, type = c("regression diagnositics", "barchart")){
 
 }
