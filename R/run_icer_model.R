@@ -11,6 +11,6 @@
 #' @export
 #'
 #' @examples
-run_icer_model <- function(cost, effect, covariates, clustering, method, interaction){
+run_icer_model <- function(cost, effect, covariates = NA, clustering = NA, method, interaction){
   ## if cluster == NA and model == "heirarchical" --> error
 }
