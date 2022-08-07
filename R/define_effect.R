@@ -7,33 +7,57 @@
 #'
 #' @param effect Vector of effect values
 #' @param id Vector of individual ID
-#' @param tx Vector referring to the different treatment value associated with each individual ID (should be 2 different values)
+#' @param tx Vector referring to the different treatment values associated with each individual ID (should be 2 different values)
+#' @param treatment1 Value/Name associated to one treatment (control), default = 0
+#' @param treatment2 Value/Name associated to the other treatment (comparator), default = 1
 #'
 #' @return A [lm()] object
 #' @export
 #'
 #' @examples
-define_effect <- function(effect, id, tx){
+define_effect <- function(effect, id, tx, control = 0, treatment = 1){
   ## errors:
-  ## if effect != vector
-  ## if id != vector
+  ## if treatment vector not 2 values
+  if (nlevels(as.factor(tx))!=2){
+    stop("Treatment vector cannot have more than 2 values.")
+  }
   ## if effect & id not same length
+  if (length(effect) != length(id)){
+    stop("Effect and ID are not the same length")
+  }
   ## if id values not numerical
+  if (!is.numeric(id)){
+    stop("IDs need to be a numerical vector")
+  }
   ## perform linear regression
   data_effect <- data.frame(effect = effect, id = id, tx = tx)
+  data_effect <- data_effect %>% mutate(tx = case_when(
+                                              tx == control ~ "control",
+                                              tx == treatment ~ "treatment"
+  ))
   final_model <- lm(effect~tx, data = data_effect)
 }
 
-#' Summarise Define Effect Results
+#' Summarize Define Effect Results
+#'
+#' Printing a formatted version of the regression results in context of an incremental cost effectiveness ratio for economic evaluations.
+#'
+#' To view raw regression results, see [summary()]
+#' @param object a [define_effect()] object
 #'
 #' @return
 #' @export
 #'
 #' @examples
-print.define_effect <- function (object, ...){
+print.define_effect <- function (object){
   ## format of print:
   ## regression values
-  ## incremental effect difference
+  cat("There were", n, "number of individuals in the control, (", put name/value here,") group.")
+  cat("There were", n, "number of individuals in the treatment, (", put name/value here,") group.")
+  cat('The average effect for the control group is: ', )
+  cat("The average effect for the treatment group is ", )
+  cat("The incremental effect difference is: ", )
+
 }
 
 #' Plot Define Effect Results
@@ -45,7 +69,7 @@ print.define_effect <- function (object, ...){
 #' @export
 #'
 #' @examples
-plot.define_effect <- function (object, type = c("regression diagnositics", "barchart")){
+plot.define_effect <- function (object, type = c("regression", "barchart")){
 
 }
 

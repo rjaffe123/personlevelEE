@@ -1,8 +1,8 @@
 #' Run ICER model
 #'
-#' @param cost
-#' @param effect
-#' @param covariates
+#' @param cost result of [define_cost()]
+#' @param effect result of [define_effect()]
+#' @param covariates a dataframe of covariates as defined by [define_covariates()]
 #' @param clustering clustering variable, default = NA
 #' @param method type of model ("SLS", "hierarchical", )
 #' @param interaction interaction terms
