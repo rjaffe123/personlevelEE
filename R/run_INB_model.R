@@ -9,6 +9,9 @@
 #' @examples
 run_INB_model <- function(nb_value, covariates = NA) {
   # data for the model
-  model <- lm(nb_value ~tx, data = data)
+  data <- left_join(cost[[1]], effect[[1]], by = c("id", "tx"))
+  covariate_names <-
+  data <- left_join(data, covariates, by = c("id", "tx"))
+  model <- lm(nb_value ~ tx + covariates, data = data)
 
 }
