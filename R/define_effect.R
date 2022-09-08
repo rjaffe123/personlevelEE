@@ -11,7 +11,7 @@
 #' @param treatment1 Value/Name associated to one treatment (control), default = 0
 #' @param treatment2 Value/Name associated to the other treatment (comparator), default = 1
 #'
-#' @return A [lm()] object
+#' @return A [lm()] object and [dataframe()]
 #' @export
 #'
 #' @examples
@@ -36,6 +36,7 @@ define_effect <- function(effect, id, tx, control = 0, treatment = 1){
                                               tx == treatment ~ "treatment"
   ))
   final_model <- lm(effect~tx, data = data_effect)
+  return(list(data_effect, final_model))
 }
 
 #' Summarize Define Effect Results
@@ -50,26 +51,39 @@ define_effect <- function(effect, id, tx, control = 0, treatment = 1){
 #'
 #' @examples
 print.define_effect <- function (object){
-  ## format of print:
-  ## regression values
-  cat("There were", n, "number of individuals in the control, (", put name/value here,") group.")
-  cat("There were", n, "number of individuals in the treatment, (", put name/value here,") group.")
-  cat('The average effect for the control group is: ', )
-  cat("The average effect for the treatment group is ", )
-  cat("The incremental effect difference is: ", )
 
+  cat("\n", "There were", length(object[[1]]$id), "number of individuals in the control group.")
+  cat("\n","There were", length(object[[1]]$id), "number of individuals in the treatment group.")
+  cat("\n",'The average effect for the control group is: ', round(object[[2]]$coefficients[1], 3))
+  cat("\n","The average effect for the treatment group is ", round(object[[2]]$coefficients[1] + object[[2]]$coefficients[2], 3))
+  cat("\n","The incremental effect difference is: ", round(object[[2]]$coefficients[2], 3))
+
+  cat("\n", 'The regression call is: Effect = beta0 + beta1(Treatment), where beta1 is a flag depending on the treatment status of the individual.')
+  cat("\n", "The full OLS regression results are below. ")
+  stargazer::stargazer(object[[2]], type="text", covariate.labels=c("Intercept (Control Average)", "Incremental Difference"),
+                       omit.stat=c("LL","ser","f"), ci=TRUE, ci.level=0.95, single.row=TRUE, intercept.bottom = FALSE)
 }
+
 
 #' Plot Define Effect Results
 #'
 #' @param object A result of [define_effect()]
 #' @param type Type of plot
 #'
-#' @return
+#' @return plots
 #' @export
 #'
 #' @examples
-plot.define_effect <- function (object, type = c("regression", "barchart")){
+plot.define_effect <- function (object, type = c("regression", "barchart", "boxplot")){
+  if (type == "regression"){
+    autoplot(object[[2]], which = 1:6, label.size = 3)
+  }
+  else if (type == "barchart"){
+    object[[1]] %>% group_by(tx) %>% summarize(average = mean(effect, na.rm=TRUE)) %>% ggplot(aes(fill = tx, y = average, x = tx)) + geom_bar(position="dodge", stat="identity") + labs(fill = "") +  ylab("Average Effect") + ggtitle("Average Effect for Each Group")
+  }
+  else if (type == "boxplot"){
+    object[[1]] %>% ggplot(aes(x = tx, y = effect)) + geom_boxplot() + ggtitle("Distribution For Each Treatment Group") + xlab("") +ylab("Effect")
+  }
 
 }
 
