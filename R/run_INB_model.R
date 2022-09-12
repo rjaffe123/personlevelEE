@@ -20,7 +20,8 @@ run_INB_model <- function(nb_value, covariates = NA) {
 
 #' Plot INB model
 #'
-#' @param object
+#' @param object a [run_INB_model()] object
+#' @param type type of graph to plot, see more details
 #'
 #' @return
 #' @export

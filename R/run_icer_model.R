@@ -16,6 +16,7 @@
 run_icer_model <- function(cost, effect, covariates = NA, interaction = TRUE, method = "linear"){
   data_cost <- left_join(cost[[1]], covariates, by = c("id"))
   data_effect <- left_join(effect[[1]], covariates, by = c("id"))
+  data_total <- data_cost %>% left_join(data_effect, by = c("id"))
 
   if (method == "linear"){
     data_lm_cost <- data_cost %>% select(-c(id))
@@ -34,33 +35,57 @@ run_icer_model <- function(cost, effect, covariates = NA, interaction = TRUE, me
     icer <- incremental_cost / incremental_effect
     cat("The ICER is: ", icer)
   }
-  return(list(cost_lm, effect_lm, icer))
+  return(list(cost_lm, effect_lm, icer, data_total))
 
 }
 
 
-#' Title
+#' Print ICER regression results
 #'
-#' @param object
+#' @param object an [run_icer_model()] object
 #'
-#' @return
+#' @return returns string
 #' @export
 #'
 #' @examples
 print.run_icer_model <- function(object) {
 
-  cat("\n", "The full ICER regression results are below. ")
+  cat("\n", "The full ICER regression(s) results are below. ")
   stargazer::stargazer(object[[1]], object[[2]], type="text",
                        omit.stat=c("LL","ser","f"), ci=TRUE, ci.level=0.95, intercept.bottom = FALSE)
 
 }
 
-#' Title
+#' Print a summary table of ICER
 #'
-#' @param object
-#' @param type
+#' @param object an [run_icer_model()] object
 #'
-#' @return
+#' @return a tibble
+#' @export
+#'
+#' @examples
+summary.run_icer_model <- function(object) {
+  tx1_name <- names(table(object[[4]]$tx)[1])
+  tx2_name <- names(table(object[[4]]$tx)[2])
+  means_tx1 <- object[[4]] %>% filter(tx == tx1_name) %>% summarize(mean_cost = mean(cost, na.rm = TRUE), mean_effect = mean(effect, na.rm = TRUE))
+  means_tx2 <- object[[4]] %>% filter(tx == tx2_name) %>% summarize(mean_cost = mean(cost, na.rm = TRUE), mean_effect = mean(effect, na.rm = TRUE))
+
+  tb <- tibble("strategy" = c(tx1_name, tx2_name),
+               "average cost" = c(means_tx1$mean_cost, means_tx2$mean_cost),
+              "incremental cost" = c("----", object[[1]]$coefficients[2]),
+              "average effect" = c(means_tx1$mean_effect, means_tx2$mean_effect),
+              "incremental effect" = c("----", object[[2]]$coefficients[2]),
+              "ICER" = c("----", object[[3]])
+              )
+  print(tb)
+}
+
+#' Plot ICER regressions
+#'
+#' @param object an [run_icer_model()] object
+#' @param type type of graph, default = regression diagnostics
+#'
+#' @return a [ggplot()] object
 #' @export
 #'
 #' @examples

@@ -3,16 +3,16 @@
 #' Creates a smaller
 #'
 #'
-#' @param lambda
-#' @param id
-#' @param cost
-#' @param effect
+#' @param lambda a value for WTP threshold
+#' @param cost a [define_cost()] object
+#' @param effect a [define_effect()] object
 #'
 #' @return return dataframe that includes NB values associated with an individual id based on given lambda
 #' @export
 #'
 #' @examples
-define_NB <- function(lambda, cost, effect, id) {
-  data_effect <- data.frame(effect = effect, id = id, tx = tx)
-  data_effect <- data_effect %>% mutate(nb = lambda*effect - cost)
+define_NB <- function(lambda, cost, effect) {
+  data <- left_join(cost[[1]], effect[[1]], by = c("id", "tx"))
+  data <- data %>% mutate(nb = lambda*effect - cost)
+  return(data)
 }

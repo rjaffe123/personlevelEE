@@ -6,14 +6,19 @@
 #' @param cost a [define_cost()] object
 #' @param effect a [define_effect()] object
 #'
-#' @return a dataframe of bootstrapped results
+#' @return a [dataframe()] of bootstrapped results
 #' @export
 #'
 #' @examples
 #'
-run_bootsrap <- function(n, cost, effect){
+run_bootstrap <- function(n, cost, effect){
+  r_squared <- function(formula, data, indices) {
+    val <- data[indices,] # selecting sample with boot
+    fit <- lm(formula, data=val)
+    return(fit$coefficients[2])
+  }
   data <- cost[[1]]
-  data <- data %>% left_join(effect[[1]], by = c("id", "tx"))
+  data <- data %>% left_join(effect[[1]], by = c("id"))
   output_cost <- boot(data = data, statistic = r_squared, R = n, formula = summary(cost[[2]])$call$formula)
   output_effect <- boot(data = data, statistic = r_squared, R = n, formula = summary(effect[[2]])$call$formula)
   boostrap_data <- output_cost[["t"]]
@@ -27,29 +32,12 @@ run_bootsrap <- function(n, cost, effect){
                                             icer1k_n = ifelse((icer < 1000 & delta_e > 0),1,0),
                                             icer10k_n = ifelse((icer < 10000 & delta_e > 0),1,0))
 
-  boostrap_data <- boostrap_data %>% mutate(formula = type)
-
+  boostrap_data <- boostrap_data %>% mutate(formula = "normal")
+  boostrap_data <- boostrap_data %>% arrange(icer)
+  cat("\n 95% Confidence Interval based on bootstrapping: ", "(", boostrap_data[round(.25*n, 0),3], ", ", boostrap_data[round(.75*n, 0),3], ")")
+  return(boostrap_data)
 }
 
-
-
-#' R-squared function
-#'
-#' @param formula
-#' @param data
-#' @param indices
-#'
-#'
-#' @return
-#' @export
-#' @keywords internal
-#'
-#' @examples
-r_squared <- function(formula, data, indices) {
-  val <- data[indices,] # selecting sample with boot
-  fit <- lm(formula, data=val)
-  return(fit$coefficients[2])
-}
 
 
 #' Plot bootstrap
@@ -61,19 +49,11 @@ r_squared <- function(formula, data, indices) {
 #'
 #' @examples
 plot.run_bootstrap <- function(object){
-
+  plot1 <- object %>% ggplot(aes(x=delta_e, y = delta_c)) + geom_point() + xlab(expression(Delta*"E"))+ylab(expression(Delta*"C"))+ geom_vline(xintercept = 0, color ="grey") +
+    geom_hline(yintercept = 0, color = "grey") +theme(axis.text.y = element_text(angle = 0, vjust = 0.5, hjust=1))
+  print(plot1)
 }
 
 
-#' Summart of Bootstrap
-#'
-#' @param object
-#'
-#' @return
-#' @export
-#'
-#' @examples
-summary.run_bootstrap <- function(object){
 
-}
 
