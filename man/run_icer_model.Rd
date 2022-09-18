@@ -4,11 +4,27 @@
 \alias{run_icer_model}
 \title{Run ICER model}
 \usage{
-run_icer_model(cost, effect, covariates, clustering, method, interaction)
+run_icer_model(
+  cost,
+  effect,
+  covariates = NA,
+  interaction = TRUE,
+  method = "linear"
+)
 }
 \arguments{
-\item{interaction}{}
+\item{cost}{result of [define_cost()]}
+
+\item{effect}{result of [define_effect()]}
+
+\item{covariates}{a dataframe of covariates as defined by [define_covariates()]}
+
+\item{interaction}{TRUE, if model should consider interaction terms}
+
+\item{method}{type of model ("linear", "hierarchical")}
+
+\item{clustering}{clustering variable, default = NA}
 }
 \description{
-Run ICER model
+This function will
 }

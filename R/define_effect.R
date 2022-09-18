@@ -15,7 +15,7 @@
 #' @export
 #'
 #' @examples
-define_effect <- function(effect, id, tx, control = 0, treatment = 1){
+define_effect <- function(effect, id, tx, control = 0, treatment = 1) {
   ## errors:
   ## if treatment vector not 2 values
   if (nlevels(as.factor(tx))!=2){
@@ -37,6 +37,13 @@ define_effect <- function(effect, id, tx, control = 0, treatment = 1){
   ))
   final_model <- lm(effect~tx, data = data_effect)
   return(list(data_effect, final_model))
+  structure(
+    list(data_effect = data_effect,
+          final_model = final_model,
+        ),
+    class("define_effect")
+
+  )
 }
 
 #' Summarize Define Effect Results
@@ -50,10 +57,10 @@ define_effect <- function(effect, id, tx, control = 0, treatment = 1){
 #' @export
 #'
 #' @examples
-print.define_effect <- function (object){
+print.define_effect <- function (object, ...){
 
-  cat("\n", "There were", length(object[[1]]$id), "number of individuals in the control group.")
-  cat("\n","There were", length(object[[1]]$id), "number of individuals in the treatment group.")
+  # cat("\n", "There were", length(object[[1]]$id), "number of individuals in the control group.")
+  # cat("\n","There were", length(object[[1]]$id), "number of individuals in the treatment group.")
   cat("\n",'The average effect for the control group is: ', round(object[[2]]$coefficients[1], 3))
   cat("\n","The average effect for the treatment group is ", round(object[[2]]$coefficients[1] + object[[2]]$coefficients[2], 3))
   cat("\n","The incremental effect difference is: ", round(object[[2]]$coefficients[2], 3))

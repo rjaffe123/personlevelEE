@@ -35,8 +35,15 @@ run_icer_model <- function(cost, effect, covariates = NA, interaction = TRUE, me
     icer <- incremental_cost / incremental_effect
     cat("The ICER is: ", icer)
   }
-  return(list(cost_lm, effect_lm, icer, data_total))
 
+
+  structure(
+    list(cost_lm = cost_lm,
+         effect_lm = effect_lm,
+         data_total = data_total
+    ),
+    class("run_icer_model")
+  )
 }
 
 

@@ -36,7 +36,13 @@ define_cost <- function(cost, id, tx, control = 0, treatment = 1){
     tx == treatment ~ "treatment"
   ))
   final_model <- lm(cost~tx, data = data_cost)
-  return(list(data_cost, final_model))
+  structure(
+    list(data_cost = data_cost,
+         final_model = final_model,
+    ),
+    class("define_cost")
+
+  )
 }
 
 #' Summarize Define Cost Results
@@ -50,10 +56,10 @@ define_cost <- function(cost, id, tx, control = 0, treatment = 1){
 #' @export
 #'
 #' @examples
-print.define_effect <- function (object){
+print.define_effect <- function (object, ...){
 
-  cat("\n", "There were", length(object[[1]]$id), "number of individuals in the control group.")
-  cat("\n","There were", length(object[[1]]$id), "number of individuals in the treatment group.")
+  # cat("\n", "There were", length(object[[1]]$id), "number of individuals in the control group.")
+  # cat("\n","There were", length(object[[1]]$id), "number of individuals in the treatment group.")
   cat("\n",'The average cost for the control group is: ', round(object[[2]]$coefficients[1], 3))
   cat("\n","The average cost for the treatment group is ", round(object[[2]]$coefficients[1] + object[[2]]$coefficients[2], 3))
   cat("\n","The incremental cost difference is: ", round(object[[2]]$coefficients[2], 3))

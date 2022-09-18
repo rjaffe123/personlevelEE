@@ -2,16 +2,28 @@
 % Please edit documentation in R/define_effect.R
 \name{define_effect}
 \alias{define_effect}
-\title{Define Effect Values}
+\title{Define Effect and Incremental Effect Difference}
 \usage{
-define_effect(effect, id, tx)
+define_effect(effect, id, tx, control = 0, treatment = 1)
 }
 \arguments{
-\item{tx}{}
+\item{effect}{Vector of effect values}
+
+\item{id}{Vector of individual ID}
+
+\item{tx}{Vector referring to the different treatment values associated with each individual ID (should be 2 different values)}
+
+\item{treatment1}{Value/Name associated to one treatment (control), default = 0}
+
+\item{treatment2}{Value/Name associated to the other treatment (comparator), default = 1}
 }
 \value{
-A data.frame
+A [lm()] object and [dataframe()]
 }
 \description{
-Define the vector for the values used to measure the effect.
+The function will store values for effect, individual ID, and treatment to be used in other functions. Will evaluate the treatment difference
+based on values given.
+}
+\details{
+A simple linear regression will evaluate the difference in effect between treatment status.
 }

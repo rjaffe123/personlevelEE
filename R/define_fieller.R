@@ -49,22 +49,25 @@ define_fieller <- function(cost, effect) {
                                           delta_e50 = part1_e50*part2_e + de)
 
   ellipse_data <- ellipse_data %>% mutate(icer = dc/de)
-  return(ellipse_data)
-  cat("\n The 95% confidence interval: " )
-  cat("\n The 75% confidence interval: " )
-  cat("\n The 50% confidence interval: " )
+
+  structure(
+    list(data = ellipse_data
+    ),
+    class("define_fieller")
+  )
 
 }
 
 #' Plot Confidence Ellipses
 #'
-#' @param object
+#' @param object a [define_fieller()] object
+#' @param ...
 #'
-#' @return
+#' @return a [ggplot2()] object
 #' @export
 #'
 #' @examples
-plot.define_fieller <- function(object){
+plot.define_fieller <- function(object, ...){
     ellipse_lm_basic %>% ggplot() +geom_path(aes(x = delta_e95, y = delta_c95, color = "red")) +
     geom_path(aes(x = delta_e75, y = delta_c75, color = "blue")) +
     geom_path(aes(x = delta_e50, y = delta_c50, color = "green")) +
@@ -77,14 +80,3 @@ plot.define_fieller <- function(object){
 }
 
 
-#' Print Confidence
-#'
-#' @param object
-#'
-#' @return
-#' @export
-#'
-#' @examples
-print.define_fieller <- function(object){
-
-}

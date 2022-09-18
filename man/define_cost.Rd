@@ -2,23 +2,28 @@
 % Please edit documentation in R/define_cost.R
 \name{define_cost}
 \alias{define_cost}
-\title{Define Cost Values]}
+\title{Define Cost and Incremental Cost Difference}
 \usage{
-define_cost(cost, id, tx)
+define_cost(cost, id, tx, control = 0, treatment = 1)
 }
 \arguments{
-\item{cost}{Vector of numerical values referring to cost}
+\item{cost}{Vector of cost values}
 
-\item{id}{Vector of numerical values referring to individual ID}
+\item{id}{Vector of individual ID}
 
-\item{tx}{}
+\item{tx}{Vector referring to the different treatment values associated with each individual ID (should be 2 different values)}
+
+\item{treatment1}{Value/Name associated to one treatment (control), default = 0}
+
+\item{treatment2}{Value/Name associated to the other treatment (comparator), default = 1}
 }
 \value{
-A data frame of a cost values associated to an individual ID
+A [lm()] object and [dataframe()]
 }
 \description{
-Define the vector used for the values to measure effect.
+The function will store values for cost, individual ID, and treatment to be used in other functions. Will evaluate the treatment difference
+based on values given.
 }
 \details{
-Function will
+A simple linear regression will evaluate the difference in cost between treatment status.
 }

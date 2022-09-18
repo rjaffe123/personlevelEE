@@ -15,7 +15,13 @@ run_INB_model <- function(nb_value, covariates = NA) {
   data <- left_join(data, covariates, by = c("id", "tx"))
   data_lm <- data %>% select(-c(id, cost, effect))
   model <- lm(nb_value ~ tx + ., data = data_lm)
-  return(list(data, model))
+
+  structure(
+    list(data = data,
+         model = model
+    ),
+    class("run_inb_model")
+  )
 }
 
 #' Plot INB model

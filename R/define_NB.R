@@ -1,6 +1,6 @@
 #' Define net benefit (NB) values
 #'
-#' Creates a smaller
+#'
 #'
 #'
 #' @param lambda a value for WTP threshold
@@ -14,5 +14,24 @@
 define_NB <- function(lambda, cost, effect) {
   data <- left_join(cost[[1]], effect[[1]], by = c("id", "tx"))
   data <- data %>% mutate(nb = lambda*effect - cost)
-  return(data)
+  structure(
+    list(data = data,
+         lambda = lambda
+    ),
+    class("define_NB")
+  )
 }
+
+#' Print NB data
+#'
+#' @param x an [define_NB()] object
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+print.define_NB <- function(x, ...){
+  print(head(x$data))
+}
+

@@ -12,3 +12,10 @@ LazyData: true
 URL: https://github.com/rjaffe123/personlevelEE
 BugReports: https://github.com/rjaffe123/personlevelEE/issues
 RoxygenNote: 7.2.0
+Imports: 
+    dplyr,
+    ggfortify,
+    ggplot2
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

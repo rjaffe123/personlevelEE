@@ -2,13 +2,20 @@
 % Please edit documentation in R/define_covariates.R
 \name{define_covariates}
 \alias{define_covariates}
-\title{Title}
+\title{Define Covariates}
 \usage{
-define_covariates(covariates, ID)
+define_covariates(covariates, names, id)
 }
 \arguments{
-\item{ID}{}
+\item{covariates}{a list of vectors corresponding to the covariates}
+
+\item{names}{list of names of the covariates}
+
+\item{id}{vector of numerical ID's}
+}
+\value{
+a dataframe of covariates linked to numerical ID's
 }
 \description{
-Title
+Takes a list of covariates and stores them for future use.
 }
