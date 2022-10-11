@@ -4,13 +4,16 @@
 \alias{print.run_icer_model}
 \title{Print ICER regression results}
 \usage{
-\method{print}{run_icer_model}(object)
+\method{print}{run_icer_model}(x, ...)
 }
 \arguments{
-\item{object}{an [run_icer_model()] object}
+\item{x}{an [run_icer_model()] object}
+
+\item{...}{additional arguments affecting the plot
+produced.}
 }
 \value{
-returns string
+returns formatted table of regression results
 }
 \description{
 Print ICER regression results

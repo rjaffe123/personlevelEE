@@ -4,10 +4,18 @@
 \alias{plot.run_bootstrap}
 \title{Plot output of bootstrap}
 \usage{
-\method{plot}{run_bootstrap}(object, type = c("cloud", "ceac"))
+\method{plot}{run_bootstrap}(x, type = c("cloud", "ceac"), ...)
 }
 \arguments{
-\item{type}{}
+\item{x}{object of [run_bootstrap()]}
+
+\item{type}{type of graph to show, either "cloud" or "ceac"}
+
+\item{...}{additional arguments affecting the plot
+produced.}
+}
+\value{
+a [ggplot2()] object
 }
 \description{
 Plot output of bootstrap

@@ -8,13 +8,13 @@
 #' @param effect Vector of effect values
 #' @param id Vector of individual ID
 #' @param tx Vector referring to the different treatment values associated with each individual ID (should be 2 different values)
-#' @param treatment1 Value/Name associated to one treatment (control), default = 0
-#' @param treatment2 Value/Name associated to the other treatment (comparator), default = 1
+#' @param control Value/Name associated to one treatment (control), default = 0
+#' @param treatment Value/Name associated to the other treatment (comparator), default = 1
 #'
 #' @return A [lm()] object and [dataframe()]
 #' @export
 #'
-#' @examples
+#' @examples examples/define_effect.R
 define_effect <- function(effect, id, tx, control = 0, treatment = 1) {
   ## errors:
   ## if treatment vector not 2 values
@@ -31,19 +31,24 @@ define_effect <- function(effect, id, tx, control = 0, treatment = 1) {
   }
   ## perform linear regression
   data_effect <- data.frame(effect = effect, id = id, tx = tx)
-  data_effect <- data_effect %>% mutate(tx = case_when(
+  data_effect <- data_effect |> dplyr::mutate(tx = dplyr::case_when(
                                               tx == control ~ "control",
                                               tx == treatment ~ "treatment"
   ))
   final_model <- lm(effect~tx, data = data_effect)
-  return(list(data_effect, final_model))
+
+  data_control <- data_effect %>% dplyr::filter(tx == "control")
+  data_trt <- data_effect %>% dplyr::filter(tx == "treatment")
+  ttest <- stats::t.test(data_control$effect, data_trt$effect)
+
   structure(
     list(data_effect = data_effect,
           final_model = final_model,
+         ttest = ttest
         ),
-    class("define_effect")
+    class = "define_effect")
 
-  )
+
 }
 
 #' Summarize Define Effect Results
@@ -51,47 +56,67 @@ define_effect <- function(effect, id, tx, control = 0, treatment = 1) {
 #' Printing a formatted version of the regression results in context of an incremental cost effectiveness ratio for economic evaluations.
 #'
 #' To view raw regression results, see [summary()]
-#' @param object a [define_effect()] object
 #'
-#' @return
+#' @param x a [define_effect()] object
+#' @param ... additional arguments affecting the summary
+#'   produced.
+#'
+#' @return formatted regression results
 #' @export
 #'
 #' @examples
-print.define_effect <- function (object, ...){
+print.define_effect <- function (x, ...){ ## add t test results
 
-  # cat("\n", "There were", length(object[[1]]$id), "number of individuals in the control group.")
-  # cat("\n","There were", length(object[[1]]$id), "number of individuals in the treatment group.")
-  cat("\n",'The average effect for the control group is: ', round(object[[2]]$coefficients[1], 3))
-  cat("\n","The average effect for the treatment group is ", round(object[[2]]$coefficients[1] + object[[2]]$coefficients[2], 3))
-  cat("\n","The incremental effect difference is: ", round(object[[2]]$coefficients[2], 3))
-
+  cat("\n",'The average effect (std. dev) for the control group is: ', round(x$final_model$coefficients[1], 3), "(", sd(subset(x$data_effect, x$data_effect$tx =="control")$effect), ")")
+  cat("\n","The average effect (std. dev) for the treatment group is ", round(x$final_model$coefficients[1] + x$final_model$coefficients[2], 3), "(", sd(subset(x$data_effect, x$data_effect$tx =="treatment")$effect), ")")
+  cat("\n","The incremental effect difference (95% CI) is: ", round(x$final_model$coefficients[2], 3), "(", x$ttest$conf.int[1], ", ", x$ttest$conf.int[2], ")")
+  cat("\n", "The p-value from a two sided t-test with an alternative hypothesis of true difference in means is not equal to 0 is: ", x$ttest$p.value)
   cat("\n", 'The regression call is: Effect = beta0 + beta1(Treatment), where beta1 is a flag depending on the treatment status of the individual.')
   cat("\n", "The full OLS regression results are below. ")
-  stargazer::stargazer(object[[2]], type="text", covariate.labels=c("Intercept (Control Average)", "Incremental Difference"),
+  stargazer::stargazer(x$final_model, type="text", covariate.labels=c("Intercept (Control Average)", "Incremental Difference"),
                        omit.stat=c("LL","ser","f"), ci=TRUE, ci.level=0.95, single.row=TRUE, intercept.bottom = FALSE)
 }
 
 
 #' Plot Define Effect Results
 #'
-#' @param object A result of [define_effect()]
+#' @param x A result of [define_effect()]
+#' @param bw Black & white plot theme for publications
 #' @param type Type of plot
 #'
-#' @return plots
-#' @export
+#' @return a [ggplot2()] object
 #'
-#' @examples
-plot.define_effect <- function (object, type = c("regression", "barchart", "boxplot")){
+#' @examples  examples/define_effect.R
+#'
+#' @export
+plot.define_effect <- function (x, type = c("regression", "barchart", "boxplot"), bw = FALSE, ...){
   if (type == "regression"){
-    autoplot(object[[2]], which = 1:6, label.size = 3)
+    require(ggfortify)
+    res <- ggplot2::autoplot(x$final_model, which = 1:6, label.size = 3)
   }
   else if (type == "barchart"){
-    object[[1]] %>% group_by(tx) %>% summarize(average = mean(effect, na.rm=TRUE)) %>% ggplot(aes(fill = tx, y = average, x = tx)) + geom_bar(position="dodge", stat="identity") + labs(fill = "") +  ylab("Average Effect") + ggtitle("Average Effect for Each Group")
+    res <- x$data_effect |> dplyr::group_by(tx) |> dplyr::summarize(average = mean(effect, na.rm=TRUE)) |> ggplot2::ggplot(aes(fill = tx, y = average, x = tx)) +
+      ggplot2::geom_bar(position="dodge", stat="identity") +
+      ggplot2::labs(fill = "") +
+      ggplot2::ylab("Average Effect") +
+      ggplot2::xlab("Treatment Group")+
+      ggplot2::ggtitle("Average Effect for Each Group")
   }
   else if (type == "boxplot"){
-    object[[1]] %>% ggplot(aes(x = tx, y = effect)) + geom_boxplot() + ggtitle("Distribution For Each Treatment Group") + xlab("") +ylab("Effect")
+    res <- x$data_effect |> ggplot2::ggplot(aes(x = tx, y = effect)) +
+      ggplot2::geom_boxplot() +
+      ggplot2::ggtitle("Distribution For Each Treatment Group") +
+      ggplot2::xlab("") +
+      ggplot2::ylab("Effect")
+  }
+  if (bw) {
+    res <- res +
+      ggplot2::scale_color_grey(start = 0, end = .8) +
+      ggplot2::scale_fill_grey(start = 0, end = .8)+
+      theme_pub_bw()
   }
 
+  res
 }
 
 

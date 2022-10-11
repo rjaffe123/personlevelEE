@@ -4,12 +4,15 @@
 \alias{plot.define_effect}
 \title{Plot Define Effect Results}
 \usage{
-\method{plot}{define_effect}(object, type = c("regression", "barchart", "boxplot"))
+\method{plot}{define_effect}(x, type = c("regression", "barchart", "boxplot"), ...)
 }
 \arguments{
-\item{object}{A result of [define_effect()]}
+\item{x}{A result of [define_effect()]}
 
 \item{type}{Type of plot}
+
+\item{...}{additional arguments affecting the plot
+produced.}
 }
 \value{
 plots

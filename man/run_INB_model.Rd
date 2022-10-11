@@ -11,6 +11,9 @@ run_INB_model(nb_value, covariates = NA)
 
 \item{covariates}{a [define_covariates()] object}
 }
+\value{
+an object of the run_INB_model class
+}
 \description{
-Run Incremental Net Benefit Model
+The function will calculate the incremental net benefit based on the lambda from [define_NB()].
 }

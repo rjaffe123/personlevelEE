@@ -11,6 +11,9 @@ define_fieller(cost, effect)
 
 \item{effect}{a [define_effect()] object}
 }
+\value{
+a data frame containing the data to create confidence ellipses
+}
 \description{
 Function uses Fieller's theorem to define values to create a confidence intervals and related confidence ellipses.
 }

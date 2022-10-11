@@ -4,10 +4,16 @@
 \alias{plot.define_fieller}
 \title{Plot Confidence Ellipses}
 \usage{
-\method{plot}{define_fieller}(object)
+\method{plot}{define_fieller}(x, ...)
 }
 \arguments{
-\item{object}{}
+\item{x}{a [define_fieller()] object}
+
+\item{...}{additional arguments affecting the plot
+produced.}
+}
+\value{
+a [ggplot2()] object
 }
 \description{
 Plot Confidence Ellipses

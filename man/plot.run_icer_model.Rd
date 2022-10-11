@@ -4,10 +4,13 @@
 \alias{plot.run_icer_model}
 \title{Plot ICER regressions}
 \usage{
-\method{plot}{run_icer_model}(object, type = c("regression"))
+\method{plot}{run_icer_model}(x, ..., type = c("regression"))
 }
 \arguments{
-\item{object}{an [run_icer_model()] object}
+\item{x}{an [run_icer_model()] object}
+
+\item{...}{additional arguments affecting the summary
+produced.}
 
 \item{type}{type of graph, default = regression diagnostics}
 }

@@ -1,33 +1,39 @@
 #' Define net benefit (NB) values
 #'
+#' Creates the NB values for each individual based on the lambdas inputted.
 #'
 #'
-#'
-#' @param lambda a value for WTP threshold
+#' @param lambdas value(s) for WTP threshold
 #' @param cost a [define_cost()] object
 #' @param effect a [define_effect()] object
 #'
 #' @return return dataframe that includes NB values associated with an individual id based on given lambda
 #' @export
 #'
-#' @examples
-define_NB <- function(lambda, cost, effect) {
-  data <- left_join(cost[[1]], effect[[1]], by = c("id", "tx"))
-  data <- data %>% mutate(nb = lambda*effect - cost)
+#' @examples examples/define_NB.R
+define_NB <- function(lambdas, cost, effect) {
+  new_columns <- c()
+  data <- dplyr::left_join(cost$data_cost, effect$data_effect, by = c("id", "tx"))
+  for (x in lambdas){
+    cat("\n Calculating a net benefit value for: ", x)
+    nb_values <- x*data$effect - data$cost
+    new_columns <- c(new_columns, paste0("nb_", x))
+    data[,paste0("nb_", x)] <- nb_values
+  }
   structure(
     list(data = data,
-         lambda = lambda
+         lambda = lambdas,
+         column_names =new_columns
     ),
-    class("define_NB")
+    class= "define_NB"
   )
 }
 
 #' Print NB data
 #'
 #' @param x an [define_NB()] object
-#' @param ...
+#' @param ... additional arguments affecting the print.
 #'
-#' @return
 #' @export
 #'
 #' @examples

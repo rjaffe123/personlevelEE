@@ -25,6 +25,10 @@ run_icer_model(
 
 \item{clustering}{clustering variable, default = NA}
 }
+\value{
+a list containing the regression results for cost, effect, related data frames, and final icer values
+}
 \description{
-This function will
+This function will calculate an ICER based on the cost and effect regressions.
+It will consider the different covariates and interaction terms from your data in the model.
 }

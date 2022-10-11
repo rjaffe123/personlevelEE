@@ -4,12 +4,18 @@
 \alias{plot.run_INB_model}
 \title{Plot INB model}
 \usage{
-\method{plot}{run_INB_model}(object, type = c("regression", "barchart", "boxplot"))
+\method{plot}{run_INB_model}(x, ..., type = c("regression", "barchart", "boxplot"))
 }
 \arguments{
-\item{object}{a [run_INB_model()] object}
+\item{x}{a [run_INB_model()] object}
+
+\item{...}{additional arguments affecting the summary
+produced.}
 
 \item{type}{type of graph to plot, see more details}
+}
+\value{
+a [ggplot2()] object
 }
 \description{
 Plot INB model

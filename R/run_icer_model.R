@@ -1,37 +1,63 @@
 #' Run ICER model
 #'
-#' This function will
+#' This function will calculate an ICER based on the cost and effect regressions.
+#' It will consider the different covariates and interaction terms from your data in the model.
 #'
 #' @param cost result of [define_cost()]
 #' @param effect result of [define_effect()]
-#' @param covariates a dataframe of covariates as defined by [define_covariates()]
-#' @param clustering clustering variable, default = NA
-#' @param method type of model ("linear", "hierarchical")
-#' @param interaction TRUE, if model should consider interaction terms
+#' @param covariates a [define_covariates()] object
+#' @param method type of model ("linear", "hierarchical"), default = "linear"
+#' @param interaction boolean, if model should consider interaction terms, default = FALSE
 #'
-#' @return
+#' @return a list containing the regression results for cost, effect, related data frames, and final icer values
 #' @export
 #'
-#' @examples
-run_icer_model <- function(cost, effect, covariates = NA, interaction = TRUE, method = "linear"){
-  data_cost <- left_join(cost[[1]], covariates, by = c("id"))
-  data_effect <- left_join(effect[[1]], covariates, by = c("id"))
-  data_total <- data_cost %>% left_join(data_effect, by = c("id"))
+#' @examples examples/run_icer_model.R
+run_icer_model <- function(cost, effect, covariates = NULL, interaction = FALSE, method = "linear"){
 
-  if (method == "linear"){
-    data_lm_cost <- data_cost %>% select(-c(id))
-    data_lm_effect <- data_effect %>% select(-c(id))
-    if (interaction == TRUE){
-      cost_lm <- lm(cost ~ tx + . * ., data = data_lm_cost)
-      effect_lm <- lm(effect ~ tx + . * ., data = data_lm_effect)
+  if (is.null(covariates)){ ## no covariates
+    data_cost <- cost$data_cost
+    data_effect<- effect$data_effect
+
+    if (method == "linear"){
+      data_lm_cost <- data_cost |> dplyr::select(-c(id))
+      data_lm_effect <- data_effect |> dplyr::select(-c(id))
+      cost_lm <- lapply(list(c("tx")), function(x) lm(reformulate(x, response = "cost"), data = data_lm_cost))
+      effect_lm <- lapply(list(c("tx")), function(x) lm(reformulate(x, response = "effect"), data = data_lm_effect))
+
+
+      # if (interaction == TRUE){## no covariates + linear model + interaction terms
+      #   interaction_terms <- do.call(paste, c(as.list(cvoariates$names), sep = ":"))
+      #   cost_lm <- lapply(list(c("tx", covariate$names, interaction_terms)), function(x) lm(reformulate(x, response = "cost"), data = data))
+      #   effect_lm <- lapply(list(c("tx", covariate$names, interaction_terms)), function(x) lm(reformulate(x, response = "effect"), data = data))
+      # }
     }
-    else {
-      cost_lm <- lm(cost ~ tx + ., data = data_cost)
-      effect_lm <- lm(effect ~ tx + ., data = data_cost)
-    }
+  }
+
+  else{ ## covariates
+    data_cost <- dplyr::left_join(cost$data_cost, covariates$data_covariates, by = c("id"))
+    data_effect <- dplyr::left_join(effect$data_effect, covariates$data_covariates, by = c("id"))
+    data_total <- data_cost |> dplyr::left_join(data_effect, by = c("id", "tx"))
+
+    if (method == "linear"){
+      data_lm_cost <- data_cost |> dplyr::select(-c(id))
+      data_lm_effect <- data_effect |> dplyr::select(-c(id))
+      if (interaction == TRUE){## covariates + linear model + interaction terms
+        interaction_terms <- do.call(paste, c(as.list(cvoariates$names), sep = ":"))
+        cost_lm <- lapply(list(c("tx", covariates$names, interaction_terms)), function(x) lm(reformulate(x, response = "cost"), data = data_lm_cost))
+        effect_lm <- lapply(list(c("tx", covariates$names, interaction_terms)), function(x) lm(reformulate(x, response = "effect"), data = data_lm_effect))
+      }
+      else {## covariates + linear model
+        cost_lm <- lapply(list(c("tx", covariates$names)), function(x) lm(reformulate(x, response = "cost"), data = data_lm_cost))
+        effect_lm <- lapply(list(c("tx", covariates$names)), function(x) lm(reformulate(x, response = "effect"), data = data_lm_effect))
+      }
+  }
+    cost_lm <- cost_lm[[1]]
+    effect_lm <- effect_lm[[1]]
+
     ## calculate ICER
     incremental_cost <- cost_lm$coefficients[2]
-    incremental_effect <-effect_lm$coefficients[2]
+    incremental_effect <- effect_lm$coefficients[2]
     icer <- incremental_cost / incremental_effect
     cat("The ICER is: ", icer)
   }
@@ -40,71 +66,99 @@ run_icer_model <- function(cost, effect, covariates = NA, interaction = TRUE, me
   structure(
     list(cost_lm = cost_lm,
          effect_lm = effect_lm,
-         data_total = data_total
+         icer = icer,
+         data_total = data_total,
+         data_effect = data_effect,
+         data_cost = data_cost
     ),
-    class("run_icer_model")
+    class = "run_icer_model"
   )
 }
 
 
 #' Print ICER regression results
 #'
-#' @param object an [run_icer_model()] object
+#' @param x an [run_icer_model()] object
+#' @param ... additional arguments affecting the plot
+#'   produced.
 #'
-#' @return returns string
+#' @return returns formatted table of regression results
 #' @export
 #'
-#' @examples
-print.run_icer_model <- function(object) {
+print.run_icer_model <- function(x, ...) {
 
   cat("\n", "The full ICER regression(s) results are below. ")
-  stargazer::stargazer(object[[1]], object[[2]], type="text",
-                       omit.stat=c("LL","ser","f"), ci=TRUE, ci.level=0.95, intercept.bottom = FALSE)
+  stargazer::stargazer(x$cost_lm, x$effect_lm, type="text",
+                       omit.stat=c("LL","ser","f"), ci=TRUE, ci.level=0.95, intercept.bottom = FALSE, dep.var.labels = c(""), column.labels = c("Cost", "Effect"))
 
 }
 
 #' Print a summary table of ICER
 #'
-#' @param object an [run_icer_model()] object
+#' @param x an [run_icer_model()] object
+#' @param ... additional arguments affecting the summary
+#'   produced.
 #'
 #' @return a tibble
 #' @export
 #'
-#' @examples
-summary.run_icer_model <- function(object) {
-  tx1_name <- names(table(object[[4]]$tx)[1])
-  tx2_name <- names(table(object[[4]]$tx)[2])
-  means_tx1 <- object[[4]] %>% filter(tx == tx1_name) %>% summarize(mean_cost = mean(cost, na.rm = TRUE), mean_effect = mean(effect, na.rm = TRUE))
-  means_tx2 <- object[[4]] %>% filter(tx == tx2_name) %>% summarize(mean_cost = mean(cost, na.rm = TRUE), mean_effect = mean(effect, na.rm = TRUE))
+summary.run_icer_model <- function(x, ...) {
+  tx1_name <- names(table(x$data_total$tx)[1])
+  tx2_name <- names(table(x$data_total$tx)[2])
+  means_tx1 <- x$data_total |> dplyr::filter(tx == tx1_name) |> dplyr::summarize(mean_cost = mean(cost, na.rm = TRUE), mean_effect = mean(effect, na.rm = TRUE))
+  means_tx2 <- x$data_total |> dplyr::filter(tx == tx2_name) |> dplyr::summarize(mean_cost = mean(cost, na.rm = TRUE), mean_effect = mean(effect, na.rm = TRUE))
 
-  tb <- tibble("strategy" = c(tx1_name, tx2_name),
-               "average cost" = c(means_tx1$mean_cost, means_tx2$mean_cost),
-              "incremental cost" = c("----", object[[1]]$coefficients[2]),
-              "average effect" = c(means_tx1$mean_effect, means_tx2$mean_effect),
-              "incremental effect" = c("----", object[[2]]$coefficients[2]),
-              "ICER" = c("----", object[[3]])
+  tb <- tibble::tibble("strategy" = c(tx1_name, tx2_name),
+               "average cost" = c(round(means_tx1$mean_cost,3), round(means_tx2$mean_cost,3)),
+              "incremental cost" = c("----", round(x$cost_lm$coefficients[2],3)),
+              "average effect" = c(round(means_tx1$mean_effect,3), round(means_tx2$mean_effect, 3)),
+              "incremental effect" = c("----", round(x$effect_lm$coefficients[2], 3)),
+              "ICER" = c("----", round(x$icer, 3))
               )
-  print(tb)
+  tb
 }
 
 #' Plot ICER regressions
 #'
-#' @param object an [run_icer_model()] object
+#' @param x an [run_icer_model()] object
 #' @param type type of graph, default = regression diagnostics
+#' @param ... additional arguments affecting the summary
+#'   produced.
+#' @param bw Black & white plot theme for publications
 #'
 #' @return a [ggplot()] object
 #' @export
 #'
-#' @examples
-plot.run_icer_model <- function(object, type = c("regression")){
+#' @examples examples/run_icer_model.R
+plot.run_icer_model <- function(x,..., type = c("regression"), bw = FALSE){
   if (type == "regression"){
-    p1 <-autoplot(object[[1]], which = c(1:3, 5), label.size = 1)
-    p2 <-autoplot(object[[2]], which = c(1:3, 5), label.size = 1)
-    first_graph_cost <- p1[[1]] +labs(title = "COST", subtitle = "Residuals vs. Fitted") + theme(plot.title = element_text(size = 18),
-                                                                                                 plot.subtitle = element_text(size = 14))
-    first_graph_effect <- p2[[1]] +labs(title = "EFFECT", subtitle = "Residuals vs. Fitted") + theme(plot.title = element_text(size = 18),
-                                                                                                     plot.subtitle = element_text(size = 14))
-    plot_grid(first_graph_cost, first_graph_effect, p1[[2]], p2[[2]],p1[[3]], p2[[3]],p1[[4]], p2[[4]],ncol = 2)
+    require(ggfortify)
+    p1 <-ggplot2::autoplot(x$cost_lm, which = c(1:3, 5), label.size = 1)
+    p2 <-ggplot2::autoplot(x$effect_lm, which = c(1:3, 5), label.size = 1)
+    first_graph_cost <- p1[[1]] + ggplot2::labs(title = "COST", subtitle = "Residuals vs. Fitted") +
+      ggplot2::theme(plot.title = element_text(size = 18),plot.subtitle = element_text(size = 14))
+    first_graph_effect <- p2[[1]] + ggplot2::labs(title = "EFFECT", subtitle = "Residuals vs. Fitted") +
+      ggplot2::theme(plot.title = element_text(size = 18),plot.subtitle = element_text(size = 14))
 
-    }
+    res <- cowplot::plot_grid(first_graph_cost, first_graph_effect, p1[[2]], p2[[2]],p1[[3]], p2[[3]],p1[[4]], p2[[4]],ncol = 2)
+
+  }
+  if (bw) {
+    require(ggfortify)
+    p1 <-ggplot2::autoplot(x$cost_lm, which = c(1:3, 5), label.size = 1) +
+      ggplot2::scale_color_grey(start = 0, end = .8) +
+      ggplot2::scale_fill_grey(start = 0, end = .8)+
+      theme_pub_bw1()
+    p2 <-ggplot2::autoplot(x$effect_lm, which = c(1:3, 5), label.size = 1)+
+      ggplot2::scale_color_grey(start = 0, end = .8) +
+      ggplot2::scale_fill_grey(start = 0, end = .8)+
+      theme_pub_bw1()
+    first_graph_cost <- p1[[1]] + ggplot2::labs(title = "COST", subtitle = "Residuals vs. Fitted") +
+      ggplot2::theme(plot.title = element_text(size = 18),plot.subtitle = element_text(size = 14))
+    first_graph_effect <- p2[[1]] + ggplot2::labs(title = "EFFECT", subtitle = "Residuals vs. Fitted") +
+      ggplot2::theme(plot.title = element_text(size = 18),plot.subtitle = element_text(size = 14))
+
+    res <- cowplot::plot_grid(first_graph_cost, first_graph_effect, p1[[2]], p2[[2]],p1[[3]], p2[[3]],p1[[4]], p2[[4]],ncol = 2)
+  }
+  res
 }

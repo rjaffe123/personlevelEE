@@ -17,5 +17,5 @@ define_NB(lambda, cost, effect)
 return dataframe that includes NB values associated with an individual id based on given lambda
 }
 \description{
-Creates a smaller
+Creates the NB values for each individual based on the lambda input.
 }

@@ -4,12 +4,15 @@
 \alias{plot.define_cost}
 \title{Plot Define Cost Results}
 \usage{
-\method{plot}{define_cost}(object, type = c("regression", "barchart", "boxplot"))
+\method{plot}{define_cost}(x, type = c("regression", "barchart", "boxplot"), ...)
 }
 \arguments{
-\item{object}{A result of [define_cost()]}
+\item{x}{A result of [define_cost()]}
 
 \item{type}{Type of plot}
+
+\item{...}{additional arguments affecting the plot
+produced.}
 }
 \value{
 plots

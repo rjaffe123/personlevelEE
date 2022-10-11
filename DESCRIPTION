@@ -3,9 +3,8 @@ Type: Package
 Title: Person Level Health Economic Modelling (Title Case)
 Version: 0.1.0
 Author: Rachael Jaffe
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Maintainer: The package maintainer <rachael.jaffe@mail.utoronto.ca>
+Description: For the use of person-level economic evaluations. 
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
@@ -13,9 +12,17 @@ URL: https://github.com/rjaffe123/personlevelEE
 BugReports: https://github.com/rjaffe123/personlevelEE/issues
 RoxygenNote: 7.2.0
 Imports: 
+    boot,
+    cowplot,
     dplyr,
     ggfortify,
-    ggplot2
+    ggplot2,
+    stargazer,
+    stats,
+    tibble,
+    tidyr
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Depends: 
+    R (>= 2.10)
