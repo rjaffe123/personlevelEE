@@ -9,7 +9,7 @@
 #' @param lambda_max maximum WTP threshold to calculate probability CE
 #' @param breaks number of breaks between minimum and maximum WTP, or custom vector
 #'
-#' @return a [dataframe()] of bootstrapped results
+#' @return a dataframe of bootstrapped results
 #' @export
 #'
 #' @example inst/examples/example_run_bootstrap.R
@@ -44,7 +44,7 @@ run_bootstrap <- function(n = 1000, cost, effect, lambda_min = 0, lambda_max = 1
   for (x in lambda_interval){
     print(x)
     name <- paste0("icer_", x, "_n")
-    boostrap_data <- boostrap_data |> mutate(!! name := ifelse((icer < x & delta_e > 0), 1,0))
+    boostrap_data <- boostrap_data |> dplyr::mutate(!! name := ifelse((icer < x & delta_e > 0), 1,0))
   }
   boostrap_data <- boostrap_data |> dplyr::arrange(icer)
   cat("\n 95% Confidence Interval for ICER based on bootstrapping: ", "(", boostrap_data[round(.025*n, 0),"icer"], ", ", boostrap_data[round(.975*n, 0),"icer"], ")")
@@ -65,6 +65,8 @@ run_bootstrap <- function(n = 1000, cost, effect, lambda_min = 0, lambda_max = 1
 #' @param x object of [run_bootstrap()]
 #' @param bw black & white plot theme?
 #' @param type type of graph to show, either "cloud" or "ceac"
+#' @param ... additional arguments affecting the plot
+#'   produced.
 #'
 #' @return a [ggplot2()] object
 #' @export
@@ -73,7 +75,7 @@ run_bootstrap <- function(n = 1000, cost, effect, lambda_min = 0, lambda_max = 1
 plot.run_bootstrap <- function(x, type = c("cloud", "ceac"), bw = FALSE, ...){
   if (type == "cloud"){
   plot1 <- x$data |> ggplot2::ggplot(ggplot2::aes(x=delta_e, y = delta_c)) + ggplot2::geom_point() + ggplot2::xlab(expression(Delta*"E"))+ ggplot2::ylab(expression(Delta*"C"))+ ggplot2::geom_vline(xintercept = 0, color ="grey") +
-    ggplot2::geom_hline(yintercept = 0, color = "grey") +ggplot2::theme(axis.text.y = element_text(angle = 0, vjust = 0.5, hjust=1))+
+    ggplot2::geom_hline(yintercept = 0, color = "grey") +ggplot2::theme(axis.text.y = ggplot2::element_text(angle = 0, vjust = 0.5, hjust=1))+
     ggplot2::ggtitle(expression("Bootstrapped Results of  " *Delta*"E & "*Delta*"C"))
 
   }
@@ -89,14 +91,14 @@ plot.run_bootstrap <- function(x, type = c("cloud", "ceac"), bw = FALSE, ...){
       ggplot2::ggtitle(expression("CEAC from Bootstrap Estimates of  " *Delta*"E & "*Delta*"C")) +
       ggplot2::xlab(expression("WTP ("*lambda*")")) +
       ggplot2::ylab("Probability of CE")+
-      ggplot2::theme(axis.text.y = element_text(angle = 0, vjust = 0.5, hjust=1))+
+      ggplot2::theme(axis.text.y = ggplot2::element_text(angle = 0, vjust = 0.5, hjust=1))+
       ggplot2::geom_label(aes(label = value))+
       ggplot2::ylim(0,1)
   }
   if (bw) {
     plot1<- plot1 +
       ggplot2::scale_color_grey(start = 0, end = .8) +
-      scale_fill_grey(start = 0, end = .8)+
+      ggplot2::scale_fill_grey(start = 0, end = .8)+
       theme_pub_bw()
   }
   plot1

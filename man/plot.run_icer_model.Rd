@@ -4,24 +4,21 @@
 \alias{plot.run_icer_model}
 \title{Plot ICER regressions}
 \usage{
-\method{plot}{run_icer_model}(x, ..., type = c("regression"), bw = FALSE)
+\method{plot}{run_icer_model}(x, type = c("regression"), bw = FALSE, ...)
 }
 \arguments{
 \item{x}{an \code{\link[=run_icer_model]{run_icer_model()}} object}
 
-\item{...}{additional arguments affecting the summary
-produced.}
-
 \item{type}{type of graph, default = regression diagnostics}
 
 \item{bw}{Black & white plot theme for publications}
+
+\item{...}{additional arguments affecting the summary
+produced.}
 }
 \value{
 a \code{\link[=ggplot]{ggplot()}} object
 }
 \description{
 Plot ICER regressions
-}
-\examples{
-examples/run_icer_model.R
 }

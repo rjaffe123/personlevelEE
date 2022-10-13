@@ -9,7 +9,8 @@
 \arguments{
 \item{x}{an \code{\link[=define_covariates]{define_covariates()}} object}
 
-\item{...}{}
+\item{...}{additional arguments affecting the summary
+produced}
 }
 \description{
 Print Covariates

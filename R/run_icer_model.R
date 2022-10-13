@@ -95,25 +95,24 @@ print.run_icer_model <- function(x, ...) {
 
 #' Print a summary table of ICER
 #'
-#' @param x an [run_icer_model()] object
-#' @param ... additional arguments affecting the summary
-#'   produced.
+#' @param object a [run_icer_model()] object
+#' @param ... additional arguments affecting the summary produced.
 #'
 #' @return a tibble
 #' @export
 #'
-summary.run_icer_model <- function(x, ...) {
-  tx1_name <- names(table(x$data_total$tx)[1])
-  tx2_name <- names(table(x$data_total$tx)[2])
-  means_tx1 <- x$data_total |> dplyr::filter(tx == tx1_name) |> dplyr::summarize(mean_cost = mean(cost, na.rm = TRUE), mean_effect = mean(effect, na.rm = TRUE))
-  means_tx2 <- x$data_total |> dplyr::filter(tx == tx2_name) |> dplyr::summarize(mean_cost = mean(cost, na.rm = TRUE), mean_effect = mean(effect, na.rm = TRUE))
+summary.run_icer_model <- function(object, ...) {
+  tx1_name <- names(table(object$data_total$tx)[1])
+  tx2_name <- names(table(object$data_total$tx)[2])
+  means_tx1 <- object$data_total |> dplyr::filter(tx == tx1_name) |> dplyr::summarize(mean_cost = mean(cost, na.rm = TRUE), mean_effect = mean(effect, na.rm = TRUE))
+  means_tx2 <- object$data_total |> dplyr::filter(tx == tx2_name) |> dplyr::summarize(mean_cost = mean(cost, na.rm = TRUE), mean_effect = mean(effect, na.rm = TRUE))
 
   tb <- tibble::tibble("strategy" = c(tx1_name, tx2_name),
                "average cost" = c(round(means_tx1$mean_cost,3), round(means_tx2$mean_cost,3)),
-              "incremental cost" = c("----", round(x$cost_lm$coefficients[2],3)),
+              "incremental cost" = c("----", round(object$cost_lm$coefficients[2],3)),
               "average effect" = c(round(means_tx1$mean_effect,3), round(means_tx2$mean_effect, 3)),
-              "incremental effect" = c("----", round(x$effect_lm$coefficients[2], 3)),
-              "ICER" = c("----", round(x$icer, 3))
+              "incremental effect" = c("----", round(object$effect_lm$coefficients[2], 3)),
+              "ICER" = c("----", round(object$icer, 3))
               )
   tb
 }
@@ -129,10 +128,10 @@ summary.run_icer_model <- function(x, ...) {
 #' @return a [ggplot()] object
 #' @export
 #'
-#' @examples examples/run_icer_model.R
-plot.run_icer_model <- function(x,..., type = c("regression"), bw = FALSE){
+#'
+plot.run_icer_model <- function(x, type = c("regression"), bw = FALSE, ...){
   if (type == "regression"){
-    require(ggfortify)
+    requireNamespace(ggfortify, quietly = TRUE)
     p1 <-ggplot2::autoplot(x$cost_lm, which = c(1:3, 5), label.size = 1)
     p2 <-ggplot2::autoplot(x$effect_lm, which = c(1:3, 5), label.size = 1)
     first_graph_cost <- p1[[1]] + ggplot2::labs(title = "COST", subtitle = "Residuals vs. Fitted") +
@@ -141,10 +140,9 @@ plot.run_icer_model <- function(x,..., type = c("regression"), bw = FALSE){
       ggplot2::theme(plot.title = element_text(size = 18),plot.subtitle = element_text(size = 14))
 
     res <- cowplot::plot_grid(first_graph_cost, first_graph_effect, p1[[2]], p2[[2]],p1[[3]], p2[[3]],p1[[4]], p2[[4]],ncol = 2)
-
   }
   if (bw) {
-    require(ggfortify)
+
     p1 <-ggplot2::autoplot(x$cost_lm, which = c(1:3, 5), label.size = 1) +
       ggplot2::scale_color_grey(start = 0, end = .8) +
       ggplot2::scale_fill_grey(start = 0, end = .8)+

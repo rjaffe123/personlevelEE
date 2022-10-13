@@ -12,6 +12,9 @@
 \item{type}{Type of plot}
 
 \item{bw}{Black & white plot theme for publications}
+
+\item{...}{additional arguments affecting the plot
+produced.}
 }
 \value{
 a \code{\link[=ggplot2]{ggplot2()}} object
@@ -22,7 +25,8 @@ Plot Define Effect Results
 \examples{
 data(data_example, package = "personlevelEE")
 
-effect_object <- define_effect(data_example$effect, data_example$id, data_example$tx)
+effect_object <- define_effect(data_example$effect, data_example$id,
+                               data_example$tx)
 
 class(effect_object)
 

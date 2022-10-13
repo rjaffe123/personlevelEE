@@ -30,7 +30,8 @@ A simple linear regression will evaluate the difference in effect between treatm
 \examples{
 data(data_example, package = "personlevelEE")
 
-effect_object <- define_effect(data_example$effect, data_example$id, data_example$tx)
+effect_object <- define_effect(data_example$effect, data_example$id,
+                               data_example$tx)
 
 class(effect_object)
 

@@ -27,7 +27,7 @@ run_bootstrap(
 \item{breaks}{number of breaks between minimum and maximum WTP, or custom vector}
 }
 \value{
-a \code{\link[=dataframe]{dataframe()}} of bootstrapped results
+a dataframe of bootstrapped results
 }
 \description{
 Non-parametric uncertainty analysis: bootstrapping. This function will sample the ICER estimate n times.
@@ -39,9 +39,12 @@ data(data_example, package = "personlevelEE")
 
 cost_object <- define_cost(data_example$cost, data_example$id, data_example$tx)
 
-effect_object <- define_effect(data_example$effect, data_example$id, data_example$tx)
+effect_object <- define_effect(data_example$effect,
+                               data_example$id, data_example$tx)
 
-bootstrap <- run_bootstrap(n=1000, cost = cost_object, effect = effect_object, lambda_min = 10, lambda_max = 10000, breaks = 4)
+bootstrap <- run_bootstrap(n=1000, cost = cost_object,
+                           effect = effect_object, lambda_min = 10,
+                           lambda_max = 10000, breaks = 4)
 
 plot(bootstrap, type = "cloud", bw =TRUE)
 plot(bootstrap, type = "ceac", bw = TRUE)

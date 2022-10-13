@@ -1,10 +1,11 @@
 # from Corson N. Areshenkoff
 # http://areshenk-research-notes.com/publication-quality-plots-in-r/
+# adapted from heemod()
 
 theme_pub_bw <- function (base_size = 12, base_family = "") {
 
   ggplot2::theme_grey(base_size = base_size,
-                      base_family = base_family) %+replace%
+                      base_family = base_family)
 
     ggplot2::theme(# Set text size
       plot.title = ggplot2::element_text(size = 18),
@@ -44,7 +45,7 @@ theme_pub_bw <- function (base_size = 12, base_family = "") {
 theme_pub_bw1 <- function (base_size = 12, base_family = "") {
 
   ggplot2::theme_grey(base_size = base_size,
-                      base_family = base_family) %+replace%
+                      base_family = base_family)
 
     ggplot2::theme(# Set text size
 

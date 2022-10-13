@@ -3,7 +3,7 @@
 #'The function will calculate the incremental net benefit based on the lambda from [define_NB()].
 #'
 #' @param covariates a [define_covariates()] object
-#' @param nb_value a [define_nb()] object
+#' @param nb_values a [define_NB()] object
 #'
 #' @return an object of the run_INB_model class
 #' @export
@@ -41,7 +41,7 @@ run_INB_model <- function(nb_values, covariates = NULL) {
 #' Plot INB model
 #'
 #' @param x a [run_INB_model()] object
-#' @param type type of graph to plot, see more details
+#' @param type type of graph to plot ("regression", "barchart", "boxplot", "ceac")
 #' @param ... additional arguments affecting the summary
 #'   produced.
 #' @param bw Black & white plot theme for publications
@@ -51,34 +51,36 @@ run_INB_model <- function(nb_values, covariates = NULL) {
 #'
 #' @example inst/examples/example_run_INB_model.R
 
-plot.run_inb_model <- function (x, type = c("regression", "barchart", "boxplot", "ceac"), bw = FALSE,...){
+plot.run_inb_model <- function (x, type = c("regression", "barchart", "boxplot", "ceac"), bw = FALSE, ...){
   if (type == "regression"){
     cowplots <- list()
     y <- 1
     for (model in x$model_inb){
-      p1<-ggplot(model, aes(.fitted, .resid))+geom_point()
-      p1<-p1+stat_smooth(method="loess", se = FALSE)+geom_hline(yintercept=0, col="red", linetype="dashed")
-      p1<-p1+xlab("Fitted values")+ylab("Residuals")
+      p1<-ggplot2::ggplot(model, aes(.fitted, .resid))+
+        ggplot2::geom_point()+
+        ggplot2::stat_smooth(method="loess", se = FALSE)+
+        ggplot2::geom_hline(yintercept=0, col="red", linetype="dashed")+
+        ggplot2::xlab("Fitted values")+ylab("Residuals")
       value =substring(names(x$model_inb)[y], regexpr("_", names(x$model_inb)[y]) + 1, nchar(names(x$model_inb)[y]))
-      p1<-p1+labs(title = paste0("NB value = ", value), subtitle = "Residual vs Fitted Plot")
+      p1<-p1+ggplot2::labs(title = paste0("NB value = ", value), subtitle = "Residual vs Fitted Plot")
 
 
-      p2 <- ggplot(model, aes(sample = .stdresid))+ stat_qq() + stat_qq_line()+
-        xlab("Theoretical Quantiles")+
-        ylab("Standardized Residuals")
-      p2<-p2+ggtitle("Normal Q-Q")
+      p2 <- ggplot2::ggplot(model, aes(sample = .stdresid))+ ggplot2::stat_qq() + ggplot2::stat_qq_line()+
+        ggplot2::xlab("Theoretical Quantiles")+
+        ggplot2::ylab("Standardized Residuals")
+      p2<-p2+ggplot2::ggtitle("Normal Q-Q")
 
-      p3<-ggplot(model, aes(.fitted, sqrt(abs(.stdresid))))+geom_point(na.rm=TRUE)
-      p3<-p3+stat_smooth(method="loess", na.rm = TRUE, se = FALSE)+xlab("Fitted Value")
-      p3<-p3+ylab(expression(sqrt("|Standardized residuals|")))
-      p3<-p3+ggtitle("Scale-Location")
+      p3<-ggplot2::ggplot(model, aes(.fitted, sqrt(abs(.stdresid))))+ggplot2::geom_point(na.rm=TRUE)
+      p3<-p3+ggplot2::stat_smooth(method="loess", na.rm = TRUE, se = FALSE)+xlab("Fitted Value")
+      p3<-p3+ggplot2::ylab(expression(sqrt("|Standardized residuals|")))
+      p3<-p3+ggplot2::ggtitle("Scale-Location")
 
-      p5<-ggplot(model, aes(.hat, .stdresid))+geom_point(aes(size=.cooksd), na.rm=TRUE)
-      p5<-p5+stat_smooth(method="loess", na.rm=TRUE, se = FALSE)
-      p5<-p5+xlab("Leverage")+ylab("Standardized Residuals")
-      p5<-p5+ggtitle("Residual vs Leverage Plot")
-      p5<-p5+labs(size = "")
-      p5<-p5+theme(legend.position="none")
+      p5<-ggplot2::ggplot(model, aes(.hat, .stdresid))+ggplot2::geom_point(aes(size=.cooksd), na.rm=TRUE)
+      p5<-p5+ggplot2::stat_smooth(method="loess", na.rm=TRUE, se = FALSE)
+      p5<-p5+ggplot2::xlab("Leverage")+ylab("Standardized Residuals")
+      p5<-p5+ggplot2::ggtitle("Residual vs Leverage Plot")
+      p5<-p5+ggplot2::labs(size = "")
+      p5<-p5+ggplot2::theme(legend.position="none")
 
       cowplots[[names(x$model_inb)[y]]] <- cowplot::plot_grid(p1, p2, p3, p5, ncol = 1)
       y = y+1
@@ -114,18 +116,19 @@ plot.run_inb_model <- function (x, type = c("regression", "barchart", "boxplot",
         ceac_data <- ceac_data |> rbind(temp)
         y = y+1
     }
-    ceac_data <- ceac_data|> dplyr::mutate(prob = case_when(
+    ceac_data <- ceac_data|> dplyr::mutate(prob = dplyr::case_when(
       coeffs <0 ~ pvalues / 2,
       coeffs > 0 ~ 1 - pvalues/2
     ))
     start_temp <- data.frame(nb_values = 0, pvalues = 0, coeffs = 0, prob = 0)
     ceac_data <- start_temp |> rbind(ceac_data)
 
-    res <- ceac_data |> ggplot2::ggplot(aes(x = as.numeric(nb_values), y = prob)) +geom_path()+
+    res <- ceac_data |> ggplot2::ggplot(aes(x = as.numeric(nb_values), y = prob)) +
+      ggplot2::geom_path()+
       ggplot2::ggtitle("CEAC from Regression Estimates of INB") +
       ggplot2::xlab(expression("WTP ("*lambda*")")) +
       ggplot2::ylab("Probability of CE")+
-      ggplot2::theme(axis.text.y = element_text(angle = 0, vjust = 0.5, hjust=1))+
+      ggplot2::theme(axis.text.y = ggplot2::element_text(angle = 0, vjust = 0.5, hjust=1))+
       ggplot2::geom_label(aes(label = round(prob, 3)))+
       ggplot2::ylim(0,1)
 
@@ -133,45 +136,45 @@ plot.run_inb_model <- function (x, type = c("regression", "barchart", "boxplot",
   if (bw & type != "regression") {
     res <- res +
       ggplot2::scale_color_grey(start = 0, end = .8) +
-      scale_fill_grey(start = 0, end = .8)+
+      ggplot2::scale_fill_grey(start = 0, end = .8)+
       theme_pub_bw()
   }
   else if (bw & type == "regression"){
     cowplots <- list()
     y <- 1
     for (model in x$model_inb){
-      p1<-ggplot(model, aes(.fitted, .resid))+geom_point()
-      p1<-p1+stat_smooth(method="loess", se = FALSE)+geom_hline(yintercept=0, col="red", linetype="dashed")
-      p1<-p1+xlab("Fitted values")+ylab("Residuals")
+      p1<-ggplot2::ggplot(model, aes(.fitted, .resid))+ggplot2::geom_point()
+      p1<-p1+ggplot2::stat_smooth(method="loess", se = FALSE)+ggplot2::geom_hline(yintercept=0, col="red", linetype="dashed")
+      p1<-p1+ggplot2::xlab("Fitted values")+ylab("Residuals")
       value =substring(names(x$model_inb)[y], regexpr("_", names(x$model_inb)[y]) + 1, nchar(names(x$model_inb)[y]))
-      p1<-p1+labs(title = paste0("NB value = ", value), subtitle = "Residual vs Fitted Plot")
+      p1<-p1+ggplot2::labs(title = paste0("NB value = ", value), subtitle = "Residual vs Fitted Plot")
       p1 <- p1 +ggplot2::scale_color_grey(start = 0, end = .8) +
         ggplot2::scale_fill_grey(start = 0, end = .8)+
         theme_pub_bw1()
 
-      p2 <- ggplot(model, aes(sample = .stdresid))+ stat_qq() + stat_qq_line()+
-        xlab("Theoretical Quantiles")+
-        ylab("Standardized Residuals")
-      p2<-p2+ggtitle("Normal Q-Q")
+      p2 <- ggplot2::ggplot(model, aes(sample = .stdresid))+ ggplot2::stat_qq() + ggplot2::stat_qq_line()+
+        ggplot2::xlab("Theoretical Quantiles")+
+        ggplot2::ylab("Standardized Residuals")
+      p2<-p2+ggplot2::ggtitle("Normal Q-Q")
       p2 <- p2 +ggplot2::scale_color_grey(start = 0, end = .8) +
         ggplot2::scale_fill_grey(start = 0, end = .8)+
         theme_pub_bw1()
 
-      p3<-ggplot(model, aes(.fitted, sqrt(abs(.stdresid))))+geom_point(na.rm=TRUE)
-      p3<-p3+stat_smooth(method="loess", na.rm = TRUE, se = FALSE)+xlab("Fitted Value")
-      p3<-p3+ylab(expression(sqrt("|Standardized residuals|")))
-      p3<-p3+ggtitle("Scale-Location")
+      p3<-ggplot2::ggplot(model, aes(.fitted, sqrt(abs(.stdresid))))+ggplot2::geom_point(na.rm=TRUE)
+      p3<-p3+ggplot2::stat_smooth(method="loess", na.rm = TRUE, se = FALSE)+ggplot2::xlab("Fitted Value")
+      p3<-p3+ggplot2::ylab(expression(sqrt("|Standardized residuals|")))
+      p3<-p3+ggplot2::ggtitle("Scale-Location")
       p3 <- p3 +ggplot2::scale_color_grey(start = 0, end = .8) +
         ggplot2::scale_fill_grey(start = 0, end = .8)+
         theme_pub_bw1()
 
-      p5<-ggplot(model, aes(.hat, .stdresid))+geom_point(aes(size=.cooksd), na.rm=TRUE)
-      p5<-p5+stat_smooth(method="loess", na.rm=TRUE, se = FALSE)
-      p5<-p5+xlab("Leverage")+ylab("Standardized Residuals")
-      p5<-p5+ggtitle("Residual vs Leverage Plot")
-      p5<-p5+labs(size = "")
+      p5<-ggplot2::ggplot(model, aes(.hat, .stdresid))+ggplot2::geom_point(aes(size=.cooksd), na.rm=TRUE)
+      p5<-p5+ggplot2::stat_smooth(method="loess", na.rm=TRUE, se = FALSE)
+      p5<-p5+ggplot2::xlab("Leverage")+ylab("Standardized Residuals")
+      p5<-p5+ggplot2::ggtitle("Residual vs Leverage Plot")
+      p5<-p5+ggplot2::labs(size = "")
       p5 <- p5 + theme_pub_bw1()
-      p5<-p5+theme(legend.position="none")
+      p5<-p5+ggplot2::theme(legend.position="none")
 
 
       cowplots[[names(x$model_inb)[y]]] <- cowplot::plot_grid(p1, p2, p3, p5, ncol = 1)

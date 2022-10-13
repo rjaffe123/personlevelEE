@@ -4,13 +4,12 @@
 \alias{summary.run_icer_model}
 \title{Print a summary table of ICER}
 \usage{
-\method{summary}{run_icer_model}(x, ...)
+\method{summary}{run_icer_model}(object, ...)
 }
 \arguments{
-\item{x}{an \code{\link[=run_icer_model]{run_icer_model()}} object}
+\item{object}{a \code{\link[=run_icer_model]{run_icer_model()}} object}
 
-\item{...}{additional arguments affecting the summary
-produced.}
+\item{...}{additional arguments affecting the summary produced.}
 }
 \value{
 a tibble

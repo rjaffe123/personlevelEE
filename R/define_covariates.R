@@ -29,7 +29,8 @@ define_covariates <- function(covariates, names, id){
 #' Print Covariates
 #'
 #' @param x an [define_covariates()] object
-#' @param ...
+#' @param ... additional arguments affecting the summary
+#'   produced
 #'
 #' @export
 #'

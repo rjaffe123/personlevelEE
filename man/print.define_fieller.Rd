@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{an \code{\link[=define_fieller]{define_fieller()}} object}
 
-\item{...}{additional arguments affecting the print.}
+\item{...}{additional arguments affecting the print}
 }
 \description{
 Print NB data

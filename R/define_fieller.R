@@ -86,13 +86,13 @@ define_fieller <- function(cost, effect) {
 #' @param ... additional arguments affecting the plot
 #'   produced.
 #' @param CI boolean, add confidence interval lines
-#' @param bwBlack & white plot theme for publications
+#' @param bw & white plot theme for publications
 #'
 #' @return a [ggplot2()] object
 #' @export
 #'
 #' @example inst/examples/example_define_fieller.R
-plot.define_fieller <- function(x, CI = FALSE, bw = FALSE,...){
+plot.define_fieller <- function(x, CI = FALSE, bw = FALSE, ...){
     if (CI){
     label <- data.frame(
         yvalue = c(x$data$ul[1]*6, x$data$ll[1]*4),
@@ -108,7 +108,7 @@ plot.define_fieller <- function(x, CI = FALSE, bw = FALSE,...){
     ggplot2::xlab(expression(Delta*"E"))+ggplot2::ylab(expression(Delta*"C"))+
     ggplot2::scale_colour_manual(name = 'Confidence Interval',
                         values =c('red'='red','blue'='blue','green'='green'), labels = c('95%','75%','50%')) +
-    ggplot2::theme(axis.text.y = element_text(angle = 0, vjust = 0.5, hjust=1))+
+    ggplot2::theme(axis.text.y = ggplot2::element_text(angle = 0, vjust = 0.5, hjust=1))+
     ggplot2::geom_abline(slope = x$data$ul[1], linetype="dotted", show.legend = TRUE)+
     ggplot2::geom_abline(slope = x$data$ll[1], linetype="dotted", show.legend = TRUE)+
     ggplot2::geom_label(data = label, aes(label = label, x = xvalue, y = yvalue))
@@ -123,7 +123,7 @@ plot.define_fieller <- function(x, CI = FALSE, bw = FALSE,...){
         ggplot2::xlab(expression(Delta*"E"))+ggplot2::ylab(expression(Delta*"C"))+
         ggplot2::scale_colour_manual(name = 'Confidence Interval',
                                      values =c('red'='red','blue'='blue','green'='green'), labels = c('95%','75%','50%')) +
-        ggplot2::theme(axis.text.y = element_text(angle = 0, vjust = 0.5, hjust=1))
+        ggplot2::theme(axis.text.y = ggplot2::element_text(angle = 0, vjust = 0.5, hjust=1))
 
     }
   if (bw) {
@@ -141,7 +141,7 @@ plot.define_fieller <- function(x, CI = FALSE, bw = FALSE,...){
 #' Print NB data
 #'
 #' @param x an [define_fieller()] object
-#' @param ... additional arguments affecting the print.
+#' @param ... additional arguments affecting the print
 #'
 #' @export
 #'

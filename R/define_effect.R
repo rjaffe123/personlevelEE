@@ -82,6 +82,8 @@ print.define_effect <- function (x, ...){ ## add t test results
 #' @param x A result of [define_effect()]
 #' @param bw Black & white plot theme for publications
 #' @param type Type of plot
+#' @param ... additional arguments affecting the plot
+#'   produced.
 #'
 #' @return a [ggplot2()] object
 #'
@@ -90,7 +92,7 @@ print.define_effect <- function (x, ...){ ## add t test results
 #' @export
 plot.define_effect <- function (x, type = c("regression", "barchart", "boxplot"), bw = FALSE, ...){
   if (type == "regression"){
-    require(ggfortify)
+    requireNamespace(ggfortify, quietly = TRUE)
     res <- ggplot2::autoplot(x$final_model, which = 1:6, label.size = 3)
   }
   else if (type == "barchart"){
