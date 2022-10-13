@@ -13,12 +13,12 @@ define_effect(effect, id, tx, control = 0, treatment = 1)
 
 \item{tx}{Vector referring to the different treatment values associated with each individual ID (should be 2 different values)}
 
-\item{treatment1}{Value/Name associated to one treatment (control), default = 0}
+\item{control}{Value/Name associated to one treatment (control), default = 0}
 
-\item{treatment2}{Value/Name associated to the other treatment (comparator), default = 1}
+\item{treatment}{Value/Name associated to the other treatment (comparator), default = 1}
 }
 \value{
-A [lm()] object and [dataframe()]
+a list of the regression, ttest objects and associated dataframe
 }
 \description{
 The function will store values for effect, individual ID, and treatment to be used in other functions. Will evaluate the treatment difference
@@ -26,4 +26,19 @@ based on values given.
 }
 \details{
 A simple linear regression will evaluate the difference in effect between treatment status.
+}
+\examples{
+data(data_example, package = "personlevelEE")
+
+effect_object <- define_effect(data_example$effect, data_example$id, data_example$tx)
+
+class(effect_object)
+
+print(effect_object)
+
+plot(effect_object, type = "regression")
+
+plot(effect_object, type = "barchart")
+
+plot(effect_object, type = "boxplot")
 }

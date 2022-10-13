@@ -12,7 +12,7 @@
 #' @return a list containing the regression results for cost, effect, related data frames, and final icer values
 #' @export
 #'
-#' @examples examples/run_icer_model.R
+#' @example inst/examples/example_run_icer_model.R
 run_icer_model <- function(cost, effect, covariates = NULL, interaction = FALSE, method = "linear"){
 
   if (is.null(covariates)){ ## no covariates
@@ -43,7 +43,7 @@ run_icer_model <- function(cost, effect, covariates = NULL, interaction = FALSE,
       data_lm_cost <- data_cost |> dplyr::select(-c(id))
       data_lm_effect <- data_effect |> dplyr::select(-c(id))
       if (interaction == TRUE){## covariates + linear model + interaction terms
-        interaction_terms <- do.call(paste, c(as.list(cvoariates$names), sep = ":"))
+        interaction_terms <- do.call(paste, c(as.list(covariates$names), sep = ":"))
         cost_lm <- lapply(list(c("tx", covariates$names, interaction_terms)), function(x) lm(reformulate(x, response = "cost"), data = data_lm_cost))
         effect_lm <- lapply(list(c("tx", covariates$names, interaction_terms)), function(x) lm(reformulate(x, response = "effect"), data = data_lm_effect))
       }

@@ -8,7 +8,7 @@
 #' @return a data frame containing the data to create confidence ellipses
 #' @export
 #'
-#' @examples examples/define_fieller.R
+#' @example inst/examples/example_define_fieller.R
 define_fieller <- function(cost, effect) {
   cost_model <- cost$final_model
   effect_model <- effect$final_model
@@ -91,7 +91,7 @@ define_fieller <- function(cost, effect) {
 #' @return a [ggplot2()] object
 #' @export
 #'
-#' @examples examples/define_fieller.R
+#' @example inst/examples/example_define_fieller.R
 plot.define_fieller <- function(x, CI = FALSE, bw = FALSE,...){
     if (CI){
     label <- data.frame(

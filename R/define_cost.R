@@ -11,10 +11,10 @@
 #' @param control Value/Name associated to one treatment (control), default = 0
 #' @param treatment Value/Name associated to the other treatment (comparator), default = 1
 #'
-#' @return A [lm()] object and [dataframe()]
+#' @return a list of the regression, ttest objects and associated dataframe
 #' @export
 #'
-#' @examples examples/define_cost.R
+#' @example inst/examples/example_define_cost.R
 define_cost <- function(cost, id, tx, control = 0, treatment = 1){
   ## errors:
   ## if treatment vector not 2 values
@@ -88,7 +88,7 @@ print.define_cost <- function(x, ...){
 #' @return a [ggplot2()] object
 #' @export
 #'
-#' @examples  examples/define_effect.R
+#' @example  inst/examples/example_define_cost.R
 plot.define_cost <- function (x, type = c("regression", "barchart", "boxplot"), bw = FALSE, ...){
   if (type == "regression"){
     require(ggfortify)

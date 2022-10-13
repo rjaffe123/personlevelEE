@@ -9,7 +9,7 @@ define_covariates(covariates, names, id)
 \arguments{
 \item{covariates}{a list of vectors corresponding to the covariates}
 
-\item{names}{list of names of the covariates}
+\item{names}{names of the covariates in order of them listed}
 
 \item{id}{vector of numerical ID's}
 }
@@ -18,4 +18,11 @@ a dataframe of covariates linked to numerical ID's
 }
 \description{
 Takes a list of covariates and stores them for future use.
+}
+\examples{
+data(data_example, package = "personlevelEE")
+
+covariates <- define_covariates(covariates = list(data_example$age, data_example$sex), names = c("age", "sex"), id = data_example$id)
+
+print(covariates)
 }

@@ -13,12 +13,12 @@ define_cost(cost, id, tx, control = 0, treatment = 1)
 
 \item{tx}{Vector referring to the different treatment values associated with each individual ID (should be 2 different values)}
 
-\item{treatment1}{Value/Name associated to one treatment (control), default = 0}
+\item{control}{Value/Name associated to one treatment (control), default = 0}
 
-\item{treatment2}{Value/Name associated to the other treatment (comparator), default = 1}
+\item{treatment}{Value/Name associated to the other treatment (comparator), default = 1}
 }
 \value{
-A [lm()] object and [dataframe()]
+a list of the regression, ttest objects and associated dataframe
 }
 \description{
 The function will store values for cost, individual ID, and treatment to be used in other functions. Will evaluate the treatment difference
@@ -26,4 +26,19 @@ based on values given.
 }
 \details{
 A simple linear regression will evaluate the difference in cost between treatment status.
+}
+\examples{
+data(data_example, package = "personlevelEE")
+
+cost_object <- define_cost(data_example$cost, data_example$id, data_example$tx)
+
+class(cost_object)
+
+print(cost_object)
+
+plot(cost_object, type = "regression")
+
+plot(cost_object, type = "barchart") +ggtitle("ok") +theme_bw()
+
+plot(cost_object, type = "boxplot")
 }

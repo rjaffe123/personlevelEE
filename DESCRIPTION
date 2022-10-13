@@ -1,16 +1,20 @@
 Package: personlevelEE
 Type: Package
-Title: Person Level Health Economic Modelling (Title Case)
+Title: Person Level Health Economic Modelling 
 Version: 0.1.0
-Author: Rachael Jaffe
-Maintainer: The package maintainer <rachael.jaffe@mail.utoronto.ca>
-Description: For the use of person-level economic evaluations. 
-License: What license is it under?
+Authors@R: c(
+    person("Jaffe", "Rachael", email = "rachael.jaffe@mail.utoronto.ca", role = c("aut", "cre")),
+    person("Wanrudee", "Isaranuwatchai", email = "wanrudee.i@hitap.net", role = c("aut"))
+    )
+Maintainer: Rachael Jaffe <rachael.jaffe@mail.utoronto.ca>
+Description: For the use of economic evaluations using person - level data (clinical RCTs, health administrative, etc). Includes cost effectiveness regression modelling, net benefit approaches, and both parametric and non parametric uncertainty analyses.  
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/rjaffe123/personlevelEE
 BugReports: https://github.com/rjaffe123/personlevelEE/issues
 RoxygenNote: 7.2.0
+Roxygen: list(markdown = TRUE)
 Imports: 
     boot,
     cowplot,
@@ -25,4 +29,4 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 
-    R (>= 2.10)
+    R (>= 3.6.0)

@@ -4,16 +4,41 @@
 \alias{run_INB_model}
 \title{Run Incremental Net Benefit Model}
 \usage{
-run_INB_model(nb_value, covariates = NA)
+run_INB_model(nb_values, covariates = NULL)
 }
 \arguments{
-\item{nb_value}{a [define_nb()] object}
+\item{covariates}{a \code{\link[=define_covariates]{define_covariates()}} object}
 
-\item{covariates}{a [define_covariates()] object}
+\item{nb_value}{a \code{\link[=define_nb]{define_nb()}} object}
 }
 \value{
 an object of the run_INB_model class
 }
 \description{
-The function will calculate the incremental net benefit based on the lambda from [define_NB()].
+The function will calculate the incremental net benefit based on the lambda from \code{\link[=define_NB]{define_NB()}}.
+}
+\examples{
+data(data_example, package = "personlevelEE")
+
+cost_object <- define_cost(data_example$cost, data_example$id, data_example$tx)
+
+effect_object <- define_effect(data_example$effect, data_example$id, data_example$tx)
+
+nb_value <- define_NB(lambdas = c(100, 350, 1000, 10000), cost = cost_object, effect = effect_object)
+
+nb_model <- run_INB_model(nb_value, covariates = covariates)
+
+print(nb_model)
+
+plot(nb_model, type = "regression", bw = TRUE)
+
+plot(nb_model, type = "boxplot", bw = TRUE)
+
+plot(nb_model, type = "barchart", bw = TRUE)
+
+plot(nb_model, type = "ceac", bw = TRUE)
+
+
+
+
 }

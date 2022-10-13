@@ -4,19 +4,32 @@
 \alias{plot.run_bootstrap}
 \title{Plot output of bootstrap}
 \usage{
-\method{plot}{run_bootstrap}(x, type = c("cloud", "ceac"), ...)
+\method{plot}{run_bootstrap}(x, type = c("cloud", "ceac"), bw = FALSE, ...)
 }
 \arguments{
-\item{x}{object of [run_bootstrap()]}
+\item{x}{object of \code{\link[=run_bootstrap]{run_bootstrap()}}}
 
 \item{type}{type of graph to show, either "cloud" or "ceac"}
 
-\item{...}{additional arguments affecting the plot
-produced.}
+\item{bw}{black & white plot theme?}
 }
 \value{
-a [ggplot2()] object
+a \code{\link[=ggplot2]{ggplot2()}} object
 }
 \description{
 Plot output of bootstrap
+}
+\examples{
+library(personlevelEE)
+
+data(data_example, package = "personlevelEE")
+
+cost_object <- define_cost(data_example$cost, data_example$id, data_example$tx)
+
+effect_object <- define_effect(data_example$effect, data_example$id, data_example$tx)
+
+bootstrap <- run_bootstrap(n=1000, cost = cost_object, effect = effect_object, lambda_min = 10, lambda_max = 10000, breaks = 4)
+
+plot(bootstrap, type = "cloud", bw =TRUE)
+plot(bootstrap, type = "ceac", bw = TRUE)
 }

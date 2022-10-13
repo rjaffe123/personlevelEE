@@ -9,7 +9,7 @@
 #' @return a dataframe of covariates linked to numerical ID's
 #' @export
 #'
-#' @examples examples/define_covariates.R
+#' @example inst/examples/example_define_covariates.R
 define_covariates <- function(covariates, names, id){
   covariate_df <- data.frame(cov = covariates[[1]])
   for (x in covariates){

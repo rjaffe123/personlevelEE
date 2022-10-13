@@ -10,7 +10,7 @@
 #' @return return dataframe that includes NB values associated with an individual id based on given lambda
 #' @export
 #'
-#' @examples examples/define_NB.R
+#' @example inst/examples/example_define_NB.R
 define_NB <- function(lambdas, cost, effect) {
   new_columns <- c()
   data <- dplyr::left_join(cost$data_cost, effect$data_effect, by = c("id", "tx"))
@@ -36,7 +36,6 @@ define_NB <- function(lambdas, cost, effect) {
 #'
 #' @export
 #'
-#' @examples
 print.define_NB <- function(x, ...){
   print(head(x$data))
 }

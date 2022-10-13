@@ -12,7 +12,7 @@
 #' @return a [dataframe()] of bootstrapped results
 #' @export
 #'
-#' @examples examples/run_bootstrap.R
+#' @example inst/examples/example_run_bootstrap.R
 run_bootstrap <- function(n = 1000, cost, effect, lambda_min = 0, lambda_max = 10000, breaks = 5){
   r_squared <- function(formula, data, indices) {
     val <- data[indices,] # selecting sample with boot
@@ -69,6 +69,7 @@ run_bootstrap <- function(n = 1000, cost, effect, lambda_min = 0, lambda_max = 1
 #' @return a [ggplot2()] object
 #' @export
 #'
+#'@example inst/examples/example_run_bootstrap.R
 plot.run_bootstrap <- function(x, type = c("cloud", "ceac"), bw = FALSE, ...){
   if (type == "cloud"){
   plot1 <- x$data |> ggplot2::ggplot(ggplot2::aes(x=delta_e, y = delta_c)) + ggplot2::geom_point() + ggplot2::xlab(expression(Delta*"E"))+ ggplot2::ylab(expression(Delta*"C"))+ ggplot2::geom_vline(xintercept = 0, color ="grey") +
@@ -81,13 +82,16 @@ plot.run_bootstrap <- function(x, type = c("cloud", "ceac"), bw = FALSE, ...){
     boostrap_data_probs <- x$data |> dplyr::summarize(across(everything(), ~ sum(.x)/n()))
     boostrap_data_probs <- boostrap_data_probs |> tidyr::pivot_longer(cols = starts_with("icer_"))
     boostrap_data_probs <- boostrap_data_probs |> dplyr::mutate(wtp = rep_len(c(x$lambda_interval), nrow(boostrap_data_probs)))
+    x <- rep(0, ncol(boostrap_data_probs))
+    boostrap_data_probs <- x |> rbind(boostrap_data_probs)
 
     plot1 <- boostrap_data_probs |> ggplot2::ggplot(aes(x = wtp, y = value)) +ggplot2::geom_path() +
       ggplot2::ggtitle(expression("CEAC from Bootstrap Estimates of  " *Delta*"E & "*Delta*"C")) +
       ggplot2::xlab(expression("WTP ("*lambda*")")) +
       ggplot2::ylab("Probability of CE")+
       ggplot2::theme(axis.text.y = element_text(angle = 0, vjust = 0.5, hjust=1))+
-      geom_label(aes(label = value))
+      ggplot2::geom_label(aes(label = value))+
+      ggplot2::ylim(0,1)
   }
   if (bw) {
     plot1<- plot1 +

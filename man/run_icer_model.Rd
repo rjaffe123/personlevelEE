@@ -7,23 +7,21 @@
 run_icer_model(
   cost,
   effect,
-  covariates = NA,
-  interaction = TRUE,
+  covariates = NULL,
+  interaction = FALSE,
   method = "linear"
 )
 }
 \arguments{
-\item{cost}{result of [define_cost()]}
+\item{cost}{result of \code{\link[=define_cost]{define_cost()}}}
 
-\item{effect}{result of [define_effect()]}
+\item{effect}{result of \code{\link[=define_effect]{define_effect()}}}
 
-\item{covariates}{a dataframe of covariates as defined by [define_covariates()]}
+\item{covariates}{a \code{\link[=define_covariates]{define_covariates()}} object}
 
-\item{interaction}{TRUE, if model should consider interaction terms}
+\item{interaction}{boolean, if model should consider interaction terms, default = FALSE}
 
-\item{method}{type of model ("linear", "hierarchical")}
-
-\item{clustering}{clustering variable, default = NA}
+\item{method}{type of model ("linear", "hierarchical"), default = "linear"}
 }
 \value{
 a list containing the regression results for cost, effect, related data frames, and final icer values
@@ -31,4 +29,23 @@ a list containing the regression results for cost, effect, related data frames, 
 \description{
 This function will calculate an ICER based on the cost and effect regressions.
 It will consider the different covariates and interaction terms from your data in the model.
+}
+\examples{
+data(data_example, package = "personlevelEE")
+
+cost_object <- define_cost(data_example$cost, data_example$id, data_example$tx)
+
+effect_object <- define_effect(data_example$effect, data_example$id, data_example$tx)
+
+covariates <- define_covariates(covariates = list(data_example$age, data_example$sex), names = c("age", "sex"), id = data_example$id)
+
+icer_model <- run_icer_model(cost_object, effect_object, covariates = covariates, interaction = FALSE)
+icer_model <- run_icer_model(cost_object, effect_object, covariates = covariates, interaction = TRUE)
+
+print(icer_model)
+
+summary(icer_model)
+
+plot(icer_model, type = "regression")
+plot(icer_model, type = "regression", bw = TRUE)
 }

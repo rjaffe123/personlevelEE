@@ -7,7 +7,7 @@
 \method{summary}{run_icer_model}(x, ...)
 }
 \arguments{
-\item{x}{an [run_icer_model()] object}
+\item{x}{an \code{\link[=run_icer_model]{run_icer_model()}} object}
 
 \item{...}{additional arguments affecting the summary
 produced.}

@@ -4,17 +4,35 @@
 \alias{plot.define_fieller}
 \title{Plot Confidence Ellipses}
 \usage{
-\method{plot}{define_fieller}(x, ...)
+\method{plot}{define_fieller}(x, CI = FALSE, bw = FALSE, ...)
 }
 \arguments{
-\item{x}{a [define_fieller()] object}
+\item{x}{a \code{\link[=define_fieller]{define_fieller()}} object}
+
+\item{CI}{boolean, add confidence interval lines}
 
 \item{...}{additional arguments affecting the plot
 produced.}
+
+\item{bwBlack}{& white plot theme for publications}
 }
 \value{
-a [ggplot2()] object
+a \code{\link[=ggplot2]{ggplot2()}} object
 }
 \description{
 Plot Confidence Ellipses
+}
+\examples{
+data(data_example, package = "personlevelEE")
+
+cost_object <- define_cost(data_example$cost, data_example$id, data_example$tx)
+
+effect_object <- define_effect(data_example$effect, data_example$id, data_example$tx)
+
+fieller <- define_fieller(cost = cost_object, effect = effect_object)
+
+plot(fieller)
+
+plot(fieller, CI = TRUE, bw = TRUE) + ggtitle("Confidence Ellipse")
+print(fieller) ## 95\% confidence interval
 }

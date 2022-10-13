@@ -4,19 +4,33 @@
 \alias{plot.define_effect}
 \title{Plot Define Effect Results}
 \usage{
-\method{plot}{define_effect}(x, type = c("regression", "barchart", "boxplot"), ...)
+\method{plot}{define_effect}(x, type = c("regression", "barchart", "boxplot"), bw = FALSE, ...)
 }
 \arguments{
-\item{x}{A result of [define_effect()]}
+\item{x}{A result of \code{\link[=define_effect]{define_effect()}}}
 
 \item{type}{Type of plot}
 
-\item{...}{additional arguments affecting the plot
-produced.}
+\item{bw}{Black & white plot theme for publications}
 }
 \value{
-plots
+a \code{\link[=ggplot2]{ggplot2()}} object
 }
 \description{
 Plot Define Effect Results
+}
+\examples{
+data(data_example, package = "personlevelEE")
+
+effect_object <- define_effect(data_example$effect, data_example$id, data_example$tx)
+
+class(effect_object)
+
+print(effect_object)
+
+plot(effect_object, type = "regression")
+
+plot(effect_object, type = "barchart")
+
+plot(effect_object, type = "boxplot")
 }

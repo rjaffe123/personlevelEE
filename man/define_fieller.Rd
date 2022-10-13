@@ -7,13 +7,27 @@
 define_fieller(cost, effect)
 }
 \arguments{
-\item{cost}{a [define_cost()] object}
+\item{cost}{a \code{\link[=define_cost]{define_cost()}} object}
 
-\item{effect}{a [define_effect()] object}
+\item{effect}{a \code{\link[=define_effect]{define_effect()}} object}
 }
 \value{
 a data frame containing the data to create confidence ellipses
 }
 \description{
 Function uses Fieller's theorem to define values to create a confidence intervals and related confidence ellipses.
+}
+\examples{
+data(data_example, package = "personlevelEE")
+
+cost_object <- define_cost(data_example$cost, data_example$id, data_example$tx)
+
+effect_object <- define_effect(data_example$effect, data_example$id, data_example$tx)
+
+fieller <- define_fieller(cost = cost_object, effect = effect_object)
+
+plot(fieller)
+
+plot(fieller, CI = TRUE, bw = TRUE) + ggtitle("Confidence Ellipse")
+print(fieller) ## 95\% confidence interval
 }

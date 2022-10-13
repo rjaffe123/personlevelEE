@@ -4,19 +4,36 @@
 \alias{plot.define_cost}
 \title{Plot Define Cost Results}
 \usage{
-\method{plot}{define_cost}(x, type = c("regression", "barchart", "boxplot"), ...)
+\method{plot}{define_cost}(x, type = c("regression", "barchart", "boxplot"), bw = FALSE, ...)
 }
 \arguments{
-\item{x}{A result of [define_cost()]}
+\item{x}{A result of \code{\link[=define_cost]{define_cost()}}}
 
 \item{type}{Type of plot}
+
+\item{bw}{Black & white plot theme for publications}
 
 \item{...}{additional arguments affecting the plot
 produced.}
 }
 \value{
-plots
+a \code{\link[=ggplot2]{ggplot2()}} object
 }
 \description{
 Plot Define Cost Results
+}
+\examples{
+data(data_example, package = "personlevelEE")
+
+cost_object <- define_cost(data_example$cost, data_example$id, data_example$tx)
+
+class(cost_object)
+
+print(cost_object)
+
+plot(cost_object, type = "regression")
+
+plot(cost_object, type = "barchart") +ggtitle("ok") +theme_bw()
+
+plot(cost_object, type = "boxplot")
 }

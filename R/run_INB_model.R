@@ -8,7 +8,7 @@
 #' @return an object of the run_INB_model class
 #' @export
 #'
-#' @examples examples/run_INB_model.R
+#' @example inst/examples/example_run_INB_model.R
 run_INB_model <- function(nb_values, covariates = NULL) {
   # data for the model
   data <- nb_values$data
@@ -49,6 +49,8 @@ run_INB_model <- function(nb_values, covariates = NULL) {
 #' @return a [ggplot2()] object
 #' @export
 #'
+#' @example inst/examples/example_run_INB_model.R
+
 plot.run_inb_model <- function (x, type = c("regression", "barchart", "boxplot", "ceac"), bw = FALSE,...){
   if (type == "regression"){
     cowplots <- list()
@@ -116,13 +118,16 @@ plot.run_inb_model <- function (x, type = c("regression", "barchart", "boxplot",
       coeffs <0 ~ pvalues / 2,
       coeffs > 0 ~ 1 - pvalues/2
     ))
+    start_temp <- data.frame(nb_values = 0, pvalues = 0, coeffs = 0, prob = 0)
+    ceac_data <- start_temp |> rbind(ceac_data)
 
     res <- ceac_data |> ggplot2::ggplot(aes(x = as.numeric(nb_values), y = prob)) +geom_path()+
       ggplot2::ggtitle("CEAC from Regression Estimates of INB") +
       ggplot2::xlab(expression("WTP ("*lambda*")")) +
       ggplot2::ylab("Probability of CE")+
       ggplot2::theme(axis.text.y = element_text(angle = 0, vjust = 0.5, hjust=1))+
-      geom_label(aes(label = round(prob, 3)))
+      ggplot2::geom_label(aes(label = round(prob, 3)))+
+      ggplot2::ylim(0,1)
 
   }
   if (bw & type != "regression") {
@@ -191,7 +196,7 @@ plot.run_inb_model <- function (x, type = c("regression", "barchart", "boxplot",
 print.run_inb_model <- function(x, ...) {
 
   cat("\n", "The full INB regression results are below. ")
-  stargazer::stargazer(nb_model$model_inb, type = "text", dep.var.labels = c(""), column.labels = as.character(nb_value$lambda),
+  stargazer::stargazer(nb_model$model_inb, type = "text", dep.var.labels = c(""), column.labels = paste0("\\lambda = ", as.character(nb_value$lambda)),
                        dep.var.caption = "Dependent variable: net benefit value", omit.stat=c("LL","ser","f"), ci=TRUE, ci.level=0.95, intercept.bottom = FALSE)
 
 }

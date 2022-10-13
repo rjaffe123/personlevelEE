@@ -7,10 +7,9 @@
 \method{print}{define_NB}(x, ...)
 }
 \arguments{
-\item{x}{an [define_NB()] object}
+\item{x}{an \code{\link[=define_NB]{define_NB()}} object}
 
-\item{...}{additional arguments affecting the plot
-produced.}
+\item{...}{additional arguments affecting the print.}
 }
 \description{
 Print NB data

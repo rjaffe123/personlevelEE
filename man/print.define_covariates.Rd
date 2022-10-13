@@ -7,7 +7,7 @@
 \method{print}{define_covariates}(x, ...)
 }
 \arguments{
-\item{x}{an [define_covariates()] object}
+\item{x}{an \code{\link[=define_covariates]{define_covariates()}} object}
 
 \item{...}{}
 }

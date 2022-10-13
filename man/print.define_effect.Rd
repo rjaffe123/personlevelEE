@@ -7,14 +7,17 @@
 \method{print}{define_effect}(x, ...)
 }
 \arguments{
-\item{x}{a [define_effect()] object}
+\item{x}{a \code{\link[=define_effect]{define_effect()}} object}
 
 \item{...}{additional arguments affecting the summary
 produced.}
+}
+\value{
+formatted regression results
 }
 \description{
 Printing a formatted version of the regression results in context of an incremental cost effectiveness ratio for economic evaluations.
 }
 \details{
-To view raw regression results, see [summary()]
+To view raw regression results, see \code{\link[=summary]{summary()}}
 }

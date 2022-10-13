@@ -4,18 +4,27 @@
 \alias{define_NB}
 \title{Define net benefit (NB) values}
 \usage{
-define_NB(lambda, cost, effect)
+define_NB(lambdas, cost, effect)
 }
 \arguments{
-\item{lambda}{a value for WTP threshold}
+\item{lambdas}{value(s) for WTP threshold}
 
-\item{cost}{a [define_cost()] object}
+\item{cost}{a \code{\link[=define_cost]{define_cost()}} object}
 
-\item{effect}{a [define_effect()] object}
+\item{effect}{a \code{\link[=define_effect]{define_effect()}} object}
 }
 \value{
 return dataframe that includes NB values associated with an individual id based on given lambda
 }
 \description{
-Creates the NB values for each individual based on the lambda input.
+Creates the NB values for each individual based on the lambdas inputted.
+}
+\examples{
+data(data_example, package = "personlevelEE")
+
+cost_object <- define_cost(data_example$cost, data_example$id, data_example$tx)
+
+effect_object <- define_effect(data_example$effect, data_example$id, data_example$tx)
+
+nb_value <- define_NB(lambdas = c(100, 350, 1000, 10000), cost = cost_object, effect = effect_object)
 }
