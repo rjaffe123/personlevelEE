@@ -23,10 +23,10 @@ Imports:
     stargazer,
     stats,
     tibble,
+    ggfortify,
     tidyr
 Suggests: 
     testthat (>= 3.0.0),
-    ggfortify,
 Config/testthat/edition: 3
 Depends: 
     R (>= 3.6.0)
