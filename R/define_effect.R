@@ -92,7 +92,7 @@ print.define_effect <- function (x, ...){ ## add t test results
 #' @export
 plot.define_effect <- function (x, type = c("regression", "barchart", "boxplot"), bw = FALSE, ...){
   if (type == "regression"){
-    requireNamespace(ggfortify, quietly = TRUE)
+    require(ggfortify, quietly = TRUE)
     res <- ggplot2::autoplot(x$final_model, which = 1:6, label.size = 3)
   }
   else if (type == "barchart"){

@@ -91,7 +91,7 @@ print.define_cost <- function(x, ...){
 #' @example  inst/examples/example_define_cost.R
 plot.define_cost <- function (x, type = c("regression", "barchart", "boxplot"), bw = FALSE, ...){
   if (type == "regression"){
-    requireNamespace(ggfortify, quietly = TRUE)
+    require(ggfortify, quietly = TRUE)
     res <- ggplot2::autoplot(x$final_model, which = 1:6, label.size = 3)
   }
   else if (type == "barchart"){
