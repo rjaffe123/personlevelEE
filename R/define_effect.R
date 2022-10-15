@@ -92,8 +92,11 @@ print.define_effect <- function (x, ...){ ## add t test results
 #' @export
 plot.define_effect <- function (x, type = c("regression", "barchart", "boxplot"), bw = FALSE, ...){
   if (type == "regression"){
-    require(ggfortify, quietly = TRUE)
-    res <- ggplot2::autoplot(x$final_model, which = 1:6, label.size = 3)
+    # require(ggfortify, quietly = TRUE)
+    # res <- ggplot2::autoplot(x$final_model, which = 1:6, label.size = 3)
+    options(warn = -1)
+    res <- cowplot::plot_grid(plotlist = plot_regression(x$final_model), ncol = 2)
+    options(warn = 0)
   }
   else if (type == "barchart"){
     res <- x$data_effect |> dplyr::group_by(tx) |> dplyr::summarize(average = mean(effect, na.rm=TRUE)) |> ggplot2::ggplot(aes(fill = tx, y = average, x = tx)) +
@@ -110,11 +113,16 @@ plot.define_effect <- function (x, type = c("regression", "barchart", "boxplot")
       ggplot2::xlab("") +
       ggplot2::ylab("Effect")
   }
-  if (bw) {
+  if (bw & type != "regression") {
     res <- res +
       ggplot2::scale_color_grey(start = 0, end = .8) +
       ggplot2::scale_fill_grey(start = 0, end = .8)+
       theme_pub_bw()
+  }
+  else if (bw & type == "regression") {
+    options(warn = -1)
+    res <- cowplot::plot_grid(plotlist = plot_regression_bw(x$final_model), ncol = 2)
+    options(warn = 0)
   }
 
   res

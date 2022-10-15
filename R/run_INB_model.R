@@ -58,7 +58,7 @@ plot.run_inb_model <- function (x, type = c("regression", "barchart", "boxplot",
     for (model in x$model_inb){
       p1<-ggplot2::ggplot(model, aes(.fitted, .resid))+
         ggplot2::geom_point()+
-        ggplot2::stat_smooth(method="loess", se = FALSE)+
+        ggplot2::stat_smooth(formula = y ~ x, method="loess", se = FALSE)+
         ggplot2::geom_hline(yintercept=0, col="red", linetype="dashed")+
         ggplot2::xlab("Fitted values")+ylab("Residuals")
       value =substring(names(x$model_inb)[y], regexpr("_", names(x$model_inb)[y]) + 1, nchar(names(x$model_inb)[y]))
@@ -71,12 +71,12 @@ plot.run_inb_model <- function (x, type = c("regression", "barchart", "boxplot",
       p2<-p2+ggplot2::ggtitle("Normal Q-Q")
 
       p3<-ggplot2::ggplot(model, aes(.fitted, sqrt(abs(.stdresid))))+ggplot2::geom_point(na.rm=TRUE)
-      p3<-p3+ggplot2::stat_smooth(method="loess", na.rm = TRUE, se = FALSE)+xlab("Fitted Value")
+      p3<-p3+ggplot2::stat_smooth(formula = y ~ x, method="loess", na.rm = TRUE, se = FALSE)+xlab("Fitted Value")
       p3<-p3+ggplot2::ylab(expression(sqrt("|Standardized residuals|")))
       p3<-p3+ggplot2::ggtitle("Scale-Location")
 
       p5<-ggplot2::ggplot(model, aes(.hat, .stdresid))+ggplot2::geom_point(aes(size=.cooksd), na.rm=TRUE)
-      p5<-p5+ggplot2::stat_smooth(method="loess", na.rm=TRUE, se = FALSE)
+      p5<-p5+ggplot2::stat_smooth(formula = y ~ x, method="loess", na.rm=TRUE, se = FALSE)
       p5<-p5+ggplot2::xlab("Leverage")+ylab("Standardized Residuals")
       p5<-p5+ggplot2::ggtitle("Residual vs Leverage Plot")
       p5<-p5+ggplot2::labs(size = "")
@@ -144,7 +144,7 @@ plot.run_inb_model <- function (x, type = c("regression", "barchart", "boxplot",
     y <- 1
     for (model in x$model_inb){
       p1<-ggplot2::ggplot(model, aes(.fitted, .resid))+ggplot2::geom_point()
-      p1<-p1+ggplot2::stat_smooth(method="loess", se = FALSE)+ggplot2::geom_hline(yintercept=0, col="red", linetype="dashed")
+      p1<-p1+ggplot2::stat_smooth(formula = y ~ x, method="loess", se = FALSE)+ggplot2::geom_hline(yintercept=0, col="red", linetype="dashed")
       p1<-p1+ggplot2::xlab("Fitted values")+ylab("Residuals")
       value =substring(names(x$model_inb)[y], regexpr("_", names(x$model_inb)[y]) + 1, nchar(names(x$model_inb)[y]))
       p1<-p1+ggplot2::labs(title = paste0("NB value = ", value), subtitle = "Residual vs Fitted Plot")
@@ -161,7 +161,7 @@ plot.run_inb_model <- function (x, type = c("regression", "barchart", "boxplot",
         theme_pub_bw1()
 
       p3<-ggplot2::ggplot(model, aes(.fitted, sqrt(abs(.stdresid))))+ggplot2::geom_point(na.rm=TRUE)
-      p3<-p3+ggplot2::stat_smooth(method="loess", na.rm = TRUE, se = FALSE)+ggplot2::xlab("Fitted Value")
+      p3<-p3+ggplot2::stat_smooth(formula = y ~ x, method="loess", na.rm = TRUE, se = FALSE)+ggplot2::xlab("Fitted Value")
       p3<-p3+ggplot2::ylab(expression(sqrt("|Standardized residuals|")))
       p3<-p3+ggplot2::ggtitle("Scale-Location")
       p3 <- p3 +ggplot2::scale_color_grey(start = 0, end = .8) +
@@ -169,7 +169,7 @@ plot.run_inb_model <- function (x, type = c("regression", "barchart", "boxplot",
         theme_pub_bw1()
 
       p5<-ggplot2::ggplot(model, aes(.hat, .stdresid))+ggplot2::geom_point(aes(size=.cooksd), na.rm=TRUE)
-      p5<-p5+ggplot2::stat_smooth(method="loess", na.rm=TRUE, se = FALSE)
+      p5<-p5+ggplot2::stat_smooth(formula = y ~ x, method="loess", na.rm=TRUE, se = FALSE)
       p5<-p5+ggplot2::xlab("Leverage")+ylab("Standardized Residuals")
       p5<-p5+ggplot2::ggtitle("Residual vs Leverage Plot")
       p5<-p5+ggplot2::labs(size = "")
