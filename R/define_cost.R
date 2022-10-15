@@ -94,7 +94,7 @@ plot.define_cost <- function (x, type = c("regression", "barchart", "boxplot"), 
     # require(ggfortify, quietly = TRUE)
     # res <- ggplot2::autoplot(x$final_model, which = 1:6, label.size = 3)
     options(warn = -1)
-    res <- cowplot::plot_grid(plotlist = plot_regression(x$final_model), ncol = 2)
+    res <- cowplot::plot_grid(plotlist = personlevelEE::plot_regression(x$final_model), ncol = 2)
     options(warn = 0)
   }
   else if (type == "barchart"){
@@ -120,7 +120,7 @@ plot.define_cost <- function (x, type = c("regression", "barchart", "boxplot"), 
   }
   else if (bw & type == "regression") {
     options(warn = -1)
-    res <- cowplot::plot_grid(plotlist = plot_regression_bw(x$final_model), ncol = 2)
+    res <- cowplot::plot_grid(plotlist = personlevelEE::plot_regression_bw(x$final_model), ncol = 2)
     options(warn = 0)
   }
 

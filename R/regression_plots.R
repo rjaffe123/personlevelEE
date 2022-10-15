@@ -68,7 +68,7 @@ plot_regression_bw <- function(model){
 
 
   p5<-ggplot2::ggplot(model, aes(.hat, .stdresid))+ggplot2::geom_point(aes(size=.cooksd), na.rm=TRUE)
-  p5<-p5+ggplot2::stat_smooth(formula = y ~ x, method="loess", na.rm=TRUE, se = FALSE)
+  p5<-p5+ggplot2::stat_smooth(method="loess", na.rm=TRUE, se = FALSE)
   p5<-p5+ggplot2::xlab("Leverage")+ylab("Standardized Residuals")
   p5<-p5+ggplot2::ggtitle("Residual vs Leverage Plot")
   p5<-p5+ggplot2::labs(size = "")
