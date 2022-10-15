@@ -1,3 +1,9 @@
+#' plot regression model 1
+#'
+#' @param model regression model
+#'
+#' @keywords internal
+#' @export
 plot_regression <- function(model){
   cowplots <- list()
 
@@ -33,7 +39,12 @@ plot_regression <- function(model){
   return(cowplots)
 }
 
-
+#' plot regression model 2
+#'
+#' @param model regression model
+#'
+#' @keywords internal
+#' @export
 plot_regression_bw <- function(model){
   cowplots <- list()
 

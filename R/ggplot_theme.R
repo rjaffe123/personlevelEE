@@ -2,6 +2,13 @@
 # http://areshenk-research-notes.com/publication-quality-plots-in-r/
 # adapted from heemod()
 
+#' theme ggplot 1
+#'
+#' @param base_size base size
+#' @param base_family font family
+#'
+#' @keywords internal
+#' @export
 theme_pub_bw <- function (base_size = 12, base_family = "") {
 
   ggplot2::theme_grey(base_size = base_size,
@@ -42,6 +49,13 @@ theme_pub_bw <- function (base_size = 12, base_family = "") {
                                                size = 0.2))
 }
 
+#' theme ggplot 2
+#'
+#' @param base_size base size
+#' @param base_family font family
+#'
+#' @keywords internal
+#' @export
 theme_pub_bw1 <- function (base_size = 12, base_family = "") {
 
   ggplot2::theme_grey(base_size = base_size,

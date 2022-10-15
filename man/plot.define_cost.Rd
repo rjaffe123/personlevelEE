@@ -33,7 +33,7 @@ print(cost_object)
 
 plot(cost_object, type = "regression")
 
-plot(cost_object, type = "barchart") +ggtitle("ok") +theme_bw()
+plot(cost_object, type = "barchart")
 
 plot(cost_object, type = "boxplot")
 }

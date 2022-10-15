@@ -143,9 +143,9 @@ plot.run_icer_model <- function(x, type = c("regression"), bw = FALSE, ...){
     p1 <- personlevelEE::plot_regression(x$cost_lm)
     p2 <- personlevelEE::plot_regression(x$effect_lm)
     first_graph_cost <- p1[["residvfitted"]] + ggplot2::labs(title = "COST", subtitle = "Residuals vs. Fitted") +
-      ggplot2::theme(plot.title = element_text(size = 18),plot.subtitle = element_text(size = 14))
+      ggplot2::theme(plot.title = ggplot2::element_text(size = 18),plot.subtitle = ggplot2::element_text(size = 14))
     first_graph_effect <- p2[["residvfitted"]] + ggplot2::labs(title = "EFFECT", subtitle = "Residuals vs. Fitted") +
-         ggplot2::theme(plot.title = element_text(size = 18),plot.subtitle = element_text(size = 14))
+         ggplot2::theme(plot.title = ggplot2::element_text(size = 18),plot.subtitle = ggplot2::element_text(size = 14))
     res <- cowplot::plot_grid(first_graph_cost, first_graph_effect, p1[[2]], p2[[2]],p1[[3]], p2[[3]],p1[[4]], p2[[4]],ncol = 2)
 
 
@@ -154,9 +154,9 @@ plot.run_icer_model <- function(x, type = c("regression"), bw = FALSE, ...){
     p1 <- personlevelEE::plot_regression_bw(x$cost_lm)
     p2 <- personlevelEE::plot_regression_bw(x$effect_lm)
     first_graph_cost <- p1[["residvfitted"]] + ggplot2::labs(title = "COST", subtitle = "Residuals vs. Fitted") +
-      ggplot2::theme(plot.title = element_text(size = 18),plot.subtitle = element_text(size = 14))
+      ggplot2::theme(plot.title = ggplot2::element_text(size = 18),plot.subtitle = ggplot2::element_text(size = 14))
     first_graph_effect <- p2[["residvfitted"]] + ggplot2::labs(title = "EFFECT", subtitle = "Residuals vs. Fitted") +
-      ggplot2::theme(plot.title = element_text(size = 18),plot.subtitle = element_text(size = 14))
+      ggplot2::theme(plot.title = ggplot2::element_text(size = 18),plot.subtitle = ggplot2::element_text(size = 14))
     res <- cowplot::plot_grid(first_graph_cost, first_graph_effect, p1[[2]], p2[[2]],p1[[3]], p2[[3]],p1[[4]], p2[[4]],ncol = 2)
   }
   res
