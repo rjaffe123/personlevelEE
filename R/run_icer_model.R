@@ -79,7 +79,7 @@ run_icer_model <- function(cost, effect, covariates = NULL, interaction = FALSE,
 #' Print ICER regression results
 #'
 #' @param x an [run_icer_model()] object
-#' @param ... additional arguments affecting the plot
+#' @param ... additional arguments affecting the print
 #'   produced.
 #'
 #' @return returns formatted table of regression results
@@ -121,7 +121,7 @@ summary.run_icer_model <- function(object, ...) {
 #'
 #' @param x an [run_icer_model()] object
 #' @param type type of graph, default = regression diagnostics
-#' @param ... additional arguments affecting the summary
+#' @param ... additional arguments affecting the plot
 #'   produced.
 #' @param bw Black & white plot theme for publications
 #'
@@ -129,7 +129,7 @@ summary.run_icer_model <- function(object, ...) {
 #' @export
 #'
 #'
-plot.run_icer_model <- function(x, type = c("regression"), bw = FALSE, ...){
+plot.run_icer_model <- function(x, type = c("regression", "ce-plane"), bw = FALSE, ...){
   if (type == "regression"){
     #require(ggfortify, quietly = TRUE)
     # p1 <-ggplot2::autoplot(x$cost_lm, which = c(1:3, 5), label.size = 1)
@@ -150,7 +150,16 @@ plot.run_icer_model <- function(x, type = c("regression"), bw = FALSE, ...){
 
 
   }
-  if (bw) {
+  else if (type == "ce-plane"){
+    incremental_cost <- x$cost_lm$coefficients[2]
+    incremental_effect <- x$effect_lm$coefficients[2]
+    xy <- data.frame(x = incremental_effect, y = incremental_cost, icer = paste0("ICER = ", round(x$icer,3)))
+    res <- xy %>% ggplot2::ggplot(aes(x,y, label = icer))+ggplot2::geom_point() +ggrepel::geom_label_repel()+
+      ggplot2::geom_hline(yintercept = 0)+
+      ggplot2::geom_vline(xintercept = 0)+xlab("Effect")+ylab("Cost")+
+      ggplot2::ggtitle("C-E plane")
+  }
+  if (bw & type == "regression") {
     p1 <- personlevelEE::plot_regression_bw(x$cost_lm)
     p2 <- personlevelEE::plot_regression_bw(x$effect_lm)
     first_graph_cost <- p1[["residvfitted"]] + ggplot2::labs(title = "COST", subtitle = "Residuals vs. Fitted") +
@@ -158,6 +167,9 @@ plot.run_icer_model <- function(x, type = c("regression"), bw = FALSE, ...){
     first_graph_effect <- p2[["residvfitted"]] + ggplot2::labs(title = "EFFECT", subtitle = "Residuals vs. Fitted") +
       ggplot2::theme(plot.title = ggplot2::element_text(size = 18),plot.subtitle = ggplot2::element_text(size = 14))
     res <- cowplot::plot_grid(first_graph_cost, first_graph_effect, p1[[2]], p2[[2]],p1[[3]], p2[[3]],p1[[4]], p2[[4]],ncol = 2)
+  }
+  else if (bw & type == "ce-plane") {
+    res <- res+theme_pub_bw()
   }
   res
 }

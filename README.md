@@ -1,0 +1,40 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# personlevelEE
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+Person-Level Economic Evaluations (personlevelEE). The package is
+designed to help users with individual level data (clinical trials
+(RCTs), health administrative data, etc) perform economic evaluations.
+An implementation of current methods to define and visualize Incremental
+Cost Effectiveness Ratios and Incremental Net Benefits using regression
+modelling, and associated sensitivity analyses.
+
+## Installation
+
+You can install the development release of personlevelEE from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("rjaffe123/personlevelEE@*release")
+```
+
+## Vignettes
+
+To get familiar with personlevelEE, there are a series of vignettes. The
+vignettes are highly recommended for new users for proper usage. After
+installing the package, vignettes can be accessed by typing
+vignette(topic, package = “personlevelEE”). The vignettes are:
+
+1.  CE_analysis
+2.  INB_analysis
+3.  sensitivity_analysis
+
+## Authors
+
+Created and maintained by Rachael Jaffe (@rjaffe123) with supervision
+from (@)
