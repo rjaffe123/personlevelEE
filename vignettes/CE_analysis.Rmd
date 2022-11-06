@@ -1,5 +1,5 @@
 ---
-title: "CE_analysis"
+title: "Cost Effectiveness Analysis"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >

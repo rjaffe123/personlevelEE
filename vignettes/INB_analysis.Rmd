@@ -1,0 +1,55 @@
+---
+title: "Incremental Net Benefit Analysis"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{INB_analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  fig.align = "center"
+)
+```
+
+## Introduction
+
+This document will go over how to do an incremental net benefit analysis using the `personlevelEE()` package. A net benefit analysis starts with defining a willingness-to-pay threshold, a lambda ($\lambda$). At the individual level, net benefit is defined for each individual, $i$, in the dataset:
+$$ NB_i = \lambda \cdot E_i - C_i$$
+## Data
+We will use the same data comparing the status quo to a new multifactorial approach to prevent falls in the elderly.
+```{r setup}
+library(personlevelEE)
+data("data_example", package="personlevelEE")
+```
+
+## Define NB
+
+Using the `define_NB()` function in the package, we can define a net benefit value for one or more $\lambda$'s. The `define_NB()` function takes the cost and effect objects from `define_cost()` and the `define_effect()` functions, respectively. 
+
+```{r}
+## get define_cost() and define_effect() objects()
+cost_object <- define_cost(data_example$cost, data_example$id,
+                           data_example$tx)
+
+effect_object <- define_effect(data_example$effect, data_example$id,
+                               data_example$tx)
+
+```
+
+Then, we can call `define_NB()` with different values of lambda as a vector of numbers:
+```{r}
+nb_value <- define_NB(lambdas = c(100, 350, 1000, 10000),
+                      cost = cost_object, effect = effect_object)
+```
+
+## Run INB analysis
+
+### Cost Effectiveness Acceptability Curve
+

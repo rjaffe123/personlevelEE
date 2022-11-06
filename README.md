@@ -20,7 +20,7 @@ You can install the development release of personlevelEE from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("rjaffe123/personlevelEE@*release")
+devtools::install_github("rjaffe123/personlevelEE")
 ```
 
 ## Vignettes
@@ -28,7 +28,7 @@ devtools::install_github("rjaffe123/personlevelEE@*release")
 To get familiar with personlevelEE, there are a series of vignettes. The
 vignettes are highly recommended for new users for proper usage. After
 installing the package, vignettes can be accessed by typing
-vignette(topic, package = “personlevelEE”). The vignettes are:
+`vignette(topic, package = "personlevelEE")`. The vignettes are:
 
 1.  CE_analysis
 2.  INB_analysis
