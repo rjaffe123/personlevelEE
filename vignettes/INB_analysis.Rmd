@@ -20,13 +20,17 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-This document will go over how to do an incremental net benefit analysis using the `personlevelEE()` package. A net benefit analysis starts with defining a willingness-to-pay threshold, a lambda ($\lambda$). At the individual level, net benefit is defined for each individual, $i$, in the dataset:
+This document will go over how to do an incremental net benefit analysis using the `personlevelEE()` package. A net benefit analysis starts with defining a willingness-to-pay threshold, a lambda ($\lambda$). At the individual level, net benefit (NB) is defined for each individual, $i$, in the dataset by:
 $$ NB_i = \lambda \cdot E_i - C_i$$
+where, C & E are the individual cost and effect, respectively.
+
+
 ## Data
-We will use the same data comparing the status quo to a new multifactorial approach to prevent falls in the elderly.
+We will use data comparing the status quo to a new multifactorial approach to prevent falls in the elderly.
 ```{r setup}
 library(personlevelEE)
 data("data_example", package="personlevelEE")
+head(data_example)
 ```
 
 ## Define NB
@@ -34,7 +38,7 @@ data("data_example", package="personlevelEE")
 Using the `define_NB()` function in the package, we can define a net benefit value for one or more $\lambda$'s. The `define_NB()` function takes the cost and effect objects from `define_cost()` and the `define_effect()` functions, respectively. 
 
 ```{r}
-## get define_cost() and define_effect() objects()
+## get define_cost() and define_effect() objects
 cost_object <- define_cost(data_example$cost, data_example$id,
                            data_example$tx)
 
@@ -51,5 +55,40 @@ nb_value <- define_NB(lambdas = c(100, 350, 1000, 10000),
 
 ## Run INB analysis
 
+Using `run_INB_model()` we can run linear regression models for each willingness to pay value as defined in `define_nb()` in the form of:
+$$ NB_\lambda = \beta_0 + \beta_1X_{trt}  $$ 
+where $X_{trt}$ is a flag of treatment status.
+
+We can add covariates to the model after defining them with `define_covariates()`. 
+
+```{r}
+## define covariates first
+covariates_list <- define_covariates(covariates = list(data_example$age,
+                                                       data_example$sex),
+                                     names = c("age", "sex"),
+                                     id = data_example$id)
+## run the model
+nb_model <- run_INB_model(nb_values = nb_value, covariates = covariates_list)
+
+print(nb_model)
+```
+
+
+We can plot the regression diagnostics, and other plots by modifying `type` (regression, barchart, or boxplot):
+```{r}
+plot(nb_model, type = "regression")
+plot(nb_model, type = "barchart")
+
+```
+
+
+
 ### Cost Effectiveness Acceptability Curve
+
+If we define more than one value for lambda, we can create a cost effectivness acceptability curve based on the regression results. We can plot $1-p/2$ against the different values of $\lambda$, where p is the p-value associated with the coefficient on the treatment dummy ($X_{trt}$).
+
+```{r}
+plot(nb_model, type = "ceac")
+```
+
 
