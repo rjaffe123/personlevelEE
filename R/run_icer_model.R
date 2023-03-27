@@ -18,13 +18,13 @@ run_icer_model <- function(cost, effect, covariates = NULL, interaction = FALSE,
   if (is.null(covariates)){ ## no covariates
     data_cost <- cost$data_cost
     data_effect<- effect$data_effect
+    data_total <- data_cost |> dplyr::left_join(data_effect, by = c("id", "tx"))
 
     if (method == "linear"){
       data_lm_cost <- data_cost |> dplyr::select(-c(id))
       data_lm_effect <- data_effect |> dplyr::select(-c(id))
       cost_lm <- lapply(list(c("tx")), function(x) lm(reformulate(x, response = "cost"), data = data_lm_cost))
       effect_lm <- lapply(list(c("tx")), function(x) lm(reformulate(x, response = "effect"), data = data_lm_effect))
-
 
       # if (interaction == TRUE){## no covariates + linear model + interaction terms
       #   interaction_terms <- do.call(paste, c(as.list(cvoariates$names), sep = ":"))
@@ -52,16 +52,16 @@ run_icer_model <- function(cost, effect, covariates = NULL, interaction = FALSE,
         effect_lm <- lapply(list(c("tx", covariates$names)), function(x) lm(reformulate(x, response = "effect"), data = data_lm_effect))
       }
   }
-    cost_lm <- cost_lm[[1]]
-    effect_lm <- effect_lm[[1]]
 
-    ## calculate ICER
-    incremental_cost <- cost_lm$coefficients[2]
-    incremental_effect <- effect_lm$coefficients[2]
-    icer <- incremental_cost / incremental_effect
-    cat("The ICER is: ", icer)
   }
+  cost_lm <- cost_lm[[1]]
+  effect_lm <- effect_lm[[1]]
 
+  ## calculate ICER
+  incremental_cost <- cost_lm$coefficients[2]
+  incremental_effect <- effect_lm$coefficients[2]
+  icer <- incremental_cost / incremental_effect
+  cat("The ICER is: ", icer)
 
   structure(
     list(cost_lm = cost_lm,
@@ -153,10 +153,14 @@ plot.run_icer_model <- function(x, type = c("regression", "ce-plane"), bw = FALS
   else if (type == "ce-plane"){
     incremental_cost <- x$cost_lm$coefficients[2]
     incremental_effect <- x$effect_lm$coefficients[2]
-    xy <- data.frame(x = incremental_effect, y = incremental_cost, icer = paste0("ICER = ", round(x$icer,3)))
+    xy <- data.frame(x = incremental_effect, y = incremental_cost, icer = paste0("ICER = ", round(x$icer,2)))
+    xy2 <- data.frame(x = incremental_effect, y = c(0))
+    xy3 <- data.frame(x = c(0), y = incremental_cost)
     res <- xy %>% ggplot2::ggplot(aes(x,y, label = icer))+ggplot2::geom_point() +ggrepel::geom_label_repel()+
       ggplot2::geom_hline(yintercept = 0)+
       ggplot2::geom_vline(xintercept = 0)+xlab("Effect")+ylab("Cost")+
+      ggplot2::scale_x_continuous(limits=c(-abs(incremental_effect), abs(incremental_effect)))+
+      ggplot2::scale_y_continuous(limits=c(-abs(incremental_cost), abs(incremental_cost)))+
       ggplot2::ggtitle("C-E plane")
   }
   if (bw & type == "regression") {

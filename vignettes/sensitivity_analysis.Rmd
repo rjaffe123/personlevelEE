@@ -19,9 +19,13 @@ knitr::opts_chunk$set(
 ```
 
 ## Introduction
+There are two types of sensitivity analyses (SA) that are typically explored: parametric and non-parametric. Parametric SA includes 
+
 - parametric vs. non parametric
 
 ## Bootstrapping
+
+
 ### CEAC 
 
 ## Filler's Theorem

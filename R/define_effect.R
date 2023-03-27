@@ -5,9 +5,10 @@
 #'
 #' A simple linear regression will evaluate the difference in effect between treatment status.
 #'
-#' @param effect Vector of effect values
-#' @param id Vector of individual ID
-#' @param tx Vector referring to the different treatment values associated with each individual ID (should be 2 different values)
+#' @param data_frame dataframe that contains the information
+#' @param effect name of effect column
+#' @param id name of ID column
+#' @param tx name of treatment column
 #' @param control Value/Name associated to one treatment (control), default = 0
 #' @param treatment Value/Name associated to the other treatment (comparator), default = 1
 #'
@@ -15,22 +16,29 @@
 #' @export
 #'
 #' @example inst/examples/example_define_effect.R
-define_effect <- function(effect, id, tx, control = 0, treatment = 1) {
-  ## errors:
+define_effect <- function(data_frame, effect, id, tx, control = 0, treatment = 1) {
+  col_effect <- deparse(substitute(effect, environment()))
+  effect <- data_frame[, colnames(data_frame)==col_effect]
+  col_ids <- deparse(substitute(id, environment()))
+  id <- data_frame[, colnames(data_frame)==col_ids]
+  col_tx <- deparse(substitute(tx, environment()))
+  tx <- data_frame[, colnames(data_frame)==col_tx]
+  data_effect <- data.frame(effect = effect, id = id, tx = tx)
+
+   ## errors:
   ## if treatment vector not 2 values
-  if (nlevels(as.factor(tx))!=2){
+  if (nlevels(as.factor(tx))>2){
     stop("Treatment vector cannot have more than 2 values.")
   }
   ## if effect & id not same length
-  if (length(effect) != length(id)){
+  if (length(data_effect$effect) != length(data_effect$id)){
     stop("Effect and ID are not the same length")
   }
   ## if id values not numerical
-  if (!is.numeric(id)){
+  if (!is.numeric(data_effect$id)){
     stop("IDs need to be a numerical vector")
   }
   ## perform linear regression
-  data_effect <- data.frame(effect = effect, id = id, tx = tx)
   data_effect <- data_effect |> dplyr::mutate(tx = dplyr::case_when(
                                               tx == control ~ "control",
                                               tx == treatment ~ "treatment"
