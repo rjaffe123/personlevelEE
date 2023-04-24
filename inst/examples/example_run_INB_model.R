@@ -1,17 +1,13 @@
 data(data_example, package = "personlevelEE")
 
-cost_object <- define_cost(data_example$cost, data_example$id,
-                           data_example$tx)
+cost_object <- define_cost(data_example, cost = cost, id = id, tx = tx)
 
-effect_object <- define_effect(data_example$effect, data_example$id,
-                               data_example$tx)
+effect_object <- define_effect(data_example, effect = effect, id = id, tx = tx)
 
-
+##add cluster variable
 data_example <- data_example %>% mutate(cluster_v = sample(1:4, length(data_example$tx), replace = TRUE))
-covariates_list <- define_covariates(covariates = list(data_example$age,
-                                                       data_example$sex),
-                                     names = c("age", "sex"),
-                                     id = data_example$id, cluster = data_example$cluster_v)
+covariates <- define_covariates(data_frame = data_example, covariates_names = c("age", "sex"), id = id, cluster ="cluster_v")
+
 
 nb_value <- define_NB(lambdas = c(100, 350, 1000, 10000),
                       cost = cost_object, effect = effect_object)

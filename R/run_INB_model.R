@@ -16,7 +16,7 @@ run_INB_model <- function(nb_values, covariates = NULL) {
   if (is.null(covariates)){
     data_lm <- data |> dplyr::select(-c(id, cost, effect))
     for (name in nb_values$column_names){
-        lm1 <- lm(name ~ tx, data = data_lm)
+        lm1 <- lm(reformulate('tx', response = name), data = data_lm)
         model_list[[name]] <- lm1
     }
   }
@@ -144,7 +144,7 @@ plot.run_inb_model <- function (x, type = c("regression", "barchart", "boxplot",
     y <- 1
     for (model in x$model_inb){
       p1<-ggplot2::ggplot(model, aes(.fitted, .resid))+ggplot2::geom_point()
-      p1<-p1+ggplot2::stat_smooth(formula = y ~ x, method="loess", se = FALSE)+ggplot2::geom_hline(yintercept=0, col="red", linetype="dashed")
+      p1<-p1+ggplot2::stat_smooth(formula = y ~ x, method="auto", se = FALSE)+ggplot2::geom_hline(yintercept=0, col="red", linetype="dashed")
       p1<-p1+ggplot2::xlab("Fitted values")+ylab("Residuals")
       value =substring(names(x$model_inb)[y], regexpr("_", names(x$model_inb)[y]) + 1, nchar(names(x$model_inb)[y]))
       p1<-p1+ggplot2::labs(title = paste0("NB value = ", value), subtitle = "Residual vs Fitted Plot")
@@ -161,7 +161,7 @@ plot.run_inb_model <- function (x, type = c("regression", "barchart", "boxplot",
         theme_pub_bw1()
 
       p3<-ggplot2::ggplot(model, aes(.fitted, sqrt(abs(.stdresid))))+ggplot2::geom_point(na.rm=TRUE)
-      p3<-p3+ggplot2::stat_smooth(formula = y ~ x, method="loess", na.rm = TRUE, se = FALSE)+ggplot2::xlab("Fitted Value")
+      p3<-p3+ggplot2::stat_smooth(formula = y ~ x, method="auto", na.rm = TRUE, se = FALSE)+ggplot2::xlab("Fitted Value")
       p3<-p3+ggplot2::ylab(expression(sqrt("|Standardized residuals|")))
       p3<-p3+ggplot2::ggtitle("Scale-Location")
       p3 <- p3 +ggplot2::scale_color_grey(start = 0, end = .8) +

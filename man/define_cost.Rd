@@ -4,14 +4,16 @@
 \alias{define_cost}
 \title{Define Cost and Incremental Cost Difference}
 \usage{
-define_cost(cost, id, tx, control = 0, treatment = 1)
+define_cost(data_frame, cost, id, tx, control = 0, treatment = 1)
 }
 \arguments{
-\item{cost}{Vector of cost values}
+\item{data_frame}{a data frame that contains the following information}
 
-\item{id}{Vector of individual ID}
+\item{cost}{name of column that has cost data}
 
-\item{tx}{Vector referring to the different treatment values associated with each individual ID (should be 2 different values)}
+\item{id}{name of ID column}
+
+\item{tx}{name of treatment column}
 
 \item{control}{Value/Name associated to one treatment (control), default = 0}
 

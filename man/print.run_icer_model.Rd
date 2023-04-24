@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{an \code{\link[=run_icer_model]{run_icer_model()}} object}
 
-\item{...}{additional arguments affecting the plot
+\item{...}{additional arguments affecting the print
 produced.}
 }
 \value{

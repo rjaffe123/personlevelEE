@@ -4,14 +4,16 @@
 \alias{define_effect}
 \title{Define Effect and Incremental Effect Difference}
 \usage{
-define_effect(effect, id, tx, control = 0, treatment = 1)
+define_effect(data_frame, effect, id, tx, control = 0, treatment = 1)
 }
 \arguments{
-\item{effect}{Vector of effect values}
+\item{data_frame}{dataframe that contains the information}
 
-\item{id}{Vector of individual ID}
+\item{effect}{name of effect column}
 
-\item{tx}{Vector referring to the different treatment values associated with each individual ID (should be 2 different values)}
+\item{id}{name of ID column}
+
+\item{tx}{name of treatment column}
 
 \item{control}{Value/Name associated to one treatment (control), default = 0}
 

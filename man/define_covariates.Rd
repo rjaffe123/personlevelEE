@@ -4,14 +4,18 @@
 \alias{define_covariates}
 \title{Define Covariates}
 \usage{
-define_covariates(covariates, names, id)
+define_covariates(data_frame, covariates_names, id, cluster = NULL)
 }
 \arguments{
-\item{covariates}{a list of vectors corresponding to the covariates}
+\item{data_frame}{a data frame that contains the following information}
+
+\item{id}{name of ID column}
+
+\item{cluster}{name of clustering variable}
+
+\item{covariate_names}{a list of the names of columns corresponding to the covariates}
 
 \item{names}{names of the covariates in order of them listed}
-
-\item{id}{vector of numerical ID's}
 }
 \value{
 a dataframe of covariates linked to numerical ID's

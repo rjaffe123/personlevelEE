@@ -14,8 +14,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 7,
   fig.height = 5,
-  fig.align = "center"
-)
+  fig.align = "center")
+options(rmarkdown.html_vignette.check_title = FALSE)
 ```
 
 # Background
@@ -97,10 +97,8 @@ Since we have age and sex in our dataset and we believe that those factors can i
 
 THe function takes a list of the vectors for each covariate in the dataset. The *names* argument is the name of the covariate in the order listed. The *id* argument is used to link the individual's data throughout the package's functions. 
 ```{r}
-# covariates <- define_covariates(covariates = list(data_example$age,
-#                                                   data_example$sex),
-#                                 names = c("age", "sex"), id = data_example$id)
-# covariates
+covariates <- define_covariates(data_frame = data_example, covariates_names = c("age", "sex"), id = id)
+covariates
 ```
 
 

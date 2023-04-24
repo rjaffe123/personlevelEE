@@ -14,22 +14,58 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 7,
   fig.height = 5,
-  fig.align = "center"
-)
+  fig.align = "center")
+options(rmarkdown.html_vignette.check_title = FALSE)
 ```
 
 ## Introduction
-There are two types of sensitivity analyses (SA) that are typically explored: parametric and non-parametric. Parametric SA includes 
+There are two types of sensitivity analyses (SA) that are typically explored: parametric and non-parametric. When we do parametric SA we assume that the distribution of our data is normal such that we can approximate the 95% confidence interval using Fieller's Theorem. On the other hand, re-sampling our data (or bootstrapping) is a non-parametric method of SA that does not assume any distribution of the data. 
 
-- parametric vs. non parametric
+Here is some additional references: [Willen & O'Brien 1996](https://pubmed.ncbi.nlm.nih.gov/8880166/); [Hoch 2006](https://pubmed.ncbi.nlm.nih.gov/16756680/); [Briggs 1998](https://pubmed.ncbi.nlm.nih.gov/9890333/); [Isaranuwatchai 2014](https://pubmed.ncbi.nlm.nih.gov/23728476/)
+
 
 ## Bootstrapping
-
-
-### CEAC 
-
-## Filler's Theorem
-
+To begin, let's do our bootstrapping. Bootstrapping will re-sample the data based on the cost and effect regressions. It will calculate a 95% confidence interval based on the 2.5% and 97.5% quantiles of the resulting sampling distribution. We also set a vector of lambdas such that we can calculate the proportion of re-sampled values that are cost effective at each lambda to plot for our cost effectiveness acceptability curve (CEAC).
 ```{r setup}
 library(personlevelEE)
+data("data_example", package="personlevelEE")
 ```
+
+```{r}
+## define cost & effect
+cost_object <- define_cost(data_example, cost = cost, id = id, tx = tx)
+effect_object <- define_effect(data_example, effect = effect, id = id, tx = tx)
+
+## the arguments of the function include the number of repetitions (n), the values of lambda (or WTP)
+
+bootstrap <- run_bootstrap(n=1000, cost = cost_object,
+                           effect = effect_object, lambda_min = 10,
+                           lambda_max = 10000, breaks = 4)
+```
+
+Plotting the results:
+```{r}
+plot(bootstrap, type = "cloud", bw =TRUE)
+```
+
+## CEAC
+```{r}
+plot(bootstrap, type = "ceac", bw = TRUE)
+```
+
+
+
+## Feiller's Theorem
+For Feiller's theorem, we use a formula to calculate the upper and lower limit of a CI based on the assumption that both the cost and effect distributions are normal. 
+```{r}
+fieller <- define_fieller(cost = cost_object, effect = effect_object)
+print(fieller) ## 95% confidence interval
+```
+
+Plotting the results:
+```{r}
+plot(fieller)
+plot(fieller, CI = TRUE, bw = TRUE)
+```
+
+

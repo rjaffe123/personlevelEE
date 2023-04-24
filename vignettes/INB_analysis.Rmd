@@ -14,8 +14,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 7,
   fig.height = 5,
-  fig.align = "center"
-)
+  fig.align = "center")
+options(rmarkdown.html_vignette.check_title = FALSE)
 ```
 
 ## Introduction
@@ -39,12 +39,8 @@ Using the `define_NB()` function in the package, we can define a net benefit val
 
 ```{r}
 ## get define_cost() and define_effect() objects
-cost_object <- define_cost(data_example$cost, data_example$id,
-                           data_example$tx)
-
-effect_object <- define_effect(data_example$effect, data_example$id,
-                               data_example$tx)
-
+cost_object <- define_cost(data_example, cost = cost, id = id, tx = tx)
+effect_object <- define_effect(data_example, effect = effect, id = id, tx = tx)
 ```
 
 Then, we can call `define_NB()` with different values of lambda as a vector of numbers:
@@ -63,19 +59,17 @@ We can add covariates to the model after defining them with `define_covariates()
 
 ```{r}
 ## define covariates first
-covariates_list <- define_covariates(covariates = list(data_example$age,
-                                                       data_example$sex),
-                                     names = c("age", "sex"),
-                                     id = data_example$id)
+covariates <- define_covariates(data_frame = data_example, covariates_names = c("age", "sex"), id = id)
+
 ## run the model
-nb_model <- run_INB_model(nb_values = nb_value, covariates = covariates_list)
+nb_model <- run_INB_model(nb_values = nb_value, covariates = NULL)
 
 print(nb_model)
 ```
 
 
 We can plot the regression diagnostics, and other plots by modifying `type` (regression, barchart, or boxplot):
-```{r}
+```{r warning = FALSE}
 plot(nb_model, type = "regression")
 plot(nb_model, type = "barchart")
 
@@ -85,7 +79,7 @@ plot(nb_model, type = "barchart")
 
 ### Cost Effectiveness Acceptability Curve
 
-If we define more than one value for lambda, we can create a cost effectivness acceptability curve based on the regression results. We can plot $1-p/2$ against the different values of $\lambda$, where p is the p-value associated with the coefficient on the treatment dummy ($X_{trt}$).
+If we define more than one value for lambda, we can create a cost effectiveness acceptability curve based on the regression results. We can plot $1-p/2$ against the different values of $\lambda$, where p is the p-value associated with the coefficient on the treatment dummy ($X_{trt}$).
 
 ```{r}
 plot(nb_model, type = "ceac")

@@ -4,7 +4,7 @@
 \alias{plot.run_icer_model}
 \title{Plot ICER regressions}
 \usage{
-\method{plot}{run_icer_model}(x, type = c("regression"), bw = FALSE, ...)
+\method{plot}{run_icer_model}(x, type = c("regression", "ce-plane"), bw = FALSE, ...)
 }
 \arguments{
 \item{x}{an \code{\link[=run_icer_model]{run_icer_model()}} object}
@@ -13,7 +13,7 @@
 
 \item{bw}{Black & white plot theme for publications}
 
-\item{...}{additional arguments affecting the summary
+\item{...}{additional arguments affecting the plot
 produced.}
 }
 \value{
