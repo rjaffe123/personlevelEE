@@ -20,7 +20,7 @@ You can install the development release of personlevelEE from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("rjaffe123/personlevelEE")
+devtools::install_github("rjaffe123/personlevelEE", dependencies = TRUE, build_vignettes = TRUE)
 ```
 
 ## Vignettes
