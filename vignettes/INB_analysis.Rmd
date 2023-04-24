@@ -72,7 +72,6 @@ We can plot the regression diagnostics, and other plots by modifying `type` (reg
 ```{r warning = FALSE}
 plot(nb_model, type = "regression")
 plot(nb_model, type = "barchart")
-
 ```
 
 

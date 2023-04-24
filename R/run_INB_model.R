@@ -199,7 +199,7 @@ plot.run_inb_model <- function (x, type = c("regression", "barchart", "boxplot",
 print.run_inb_model <- function(x, ...) {
 
   cat("\n", "The full INB regression results are below. ")
-  stargazer::stargazer(nb_model$model_inb, type = "text", dep.var.labels = c(""), column.labels = paste0("\\lambda = ", as.character(nb_value$lambda)),
+  stargazer::stargazer(x$model_inb, type = "text", dep.var.labels = c(""), column.labels = paste0("\\lambda = ", as.character(x$lambda)),
                        dep.var.caption = "Dependent variable: net benefit value", omit.stat=c("LL","ser","f"), ci=TRUE, ci.level=0.95, intercept.bottom = FALSE)
 
 }
