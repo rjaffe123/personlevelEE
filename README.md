@@ -20,7 +20,7 @@ You can install the development release of personlevelEE from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("rjaffe123/personlevelEE")
+devtools::install_github("rjaffe123/personlevelEE", dependencies = TRUE, build_vignettes = TRUE)
 ```
 
 ## Vignettes
@@ -37,4 +37,4 @@ installing the package, vignettes can be accessed by typing
 ## Authors
 
 Created and maintained by Rachael Jaffe (@rjaffe123) with supervision
-from (@)
+from [Dr. Wanrudee Isaranuwatchai](https://ihpme.utoronto.ca/faculty-profile/wanrudee-isaranuwatchai/)
