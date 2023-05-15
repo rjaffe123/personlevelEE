@@ -37,10 +37,9 @@ library(personlevelEE)
 
 data(data_example, package = "personlevelEE")
 
-cost_object <- define_cost(data_example$cost, data_example$id, data_example$tx)
+cost_object <- define_cost(data_example, cost = cost, id = id, tx = tx)
 
-effect_object <- define_effect(data_example$effect,
-                               data_example$id, data_example$tx)
+effect_object <- define_effect(data_example, effect = effect, id = id, tx = tx)
 
 bootstrap <- run_bootstrap(n=1000, cost = cost_object,
                            effect = effect_object, lambda_min = 10,

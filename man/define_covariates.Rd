@@ -4,7 +4,7 @@
 \alias{define_covariates}
 \title{Define Covariates}
 \usage{
-define_covariates(data_frame, covariates_names, id, cluster = NULL)
+define_covariates(data_frame, covariates_names, id, cluster = "none")
 }
 \arguments{
 \item{data_frame}{a data frame that contains the following information}
@@ -14,8 +14,6 @@ define_covariates(data_frame, covariates_names, id, cluster = NULL)
 \item{cluster}{name of clustering variable}
 
 \item{covariate_names}{a list of the names of columns corresponding to the covariates}
-
-\item{names}{names of the covariates in order of them listed}
 }
 \value{
 a dataframe of covariates linked to numerical ID's
@@ -26,9 +24,7 @@ Takes a list of covariates and stores them for future use.
 \examples{
 data(data_example, package = "personlevelEE")
 
-covariates <- define_covariates(covariates =
-                                  list(data_example$age, data_example$sex),
-                                names = c("age", "sex"), id = data_example$id)
+covariates <- define_covariates(data_frame = data_example, covariates_names = c("age", "sex"), id = id)
 
 print(covariates)
 }

@@ -32,7 +32,7 @@ A simple linear regression will evaluate the difference in cost between treatmen
 \examples{
 data(data_example, package = "personlevelEE")
 
-cost_object <- define_cost(data_example$cost, data_example$id, data_example$tx)
+cost_object <- define_cost(data_example, cost = cost, id = id, tx = tx)
 
 class(cost_object)
 
