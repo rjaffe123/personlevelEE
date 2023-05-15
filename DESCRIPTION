@@ -24,6 +24,8 @@ Imports:
     stats,
     tibble,
     ggfortify,
+    ggrepel,
+    tableone,
     tidyr
 Suggests: 
     knitr,
