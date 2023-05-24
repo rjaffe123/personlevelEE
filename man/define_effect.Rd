@@ -9,11 +9,11 @@ define_effect(data_frame, effect, id, tx, control = 0, treatment = 1)
 \arguments{
 \item{data_frame}{dataframe that contains the information}
 
-\item{effect}{name of effect column}
+\item{effect}{(string) name of effect column}
 
-\item{id}{name of ID column}
+\item{id}{(string) name of ID column}
 
-\item{tx}{name of treatment column}
+\item{tx}{(string) name of treatment column}
 
 \item{control}{Value/Name associated to one treatment (control), default = 0}
 
@@ -32,7 +32,7 @@ A simple linear regression will evaluate the difference in effect between treatm
 \examples{
 data(data_example, package = "personlevelEE")
 
-effect_object <- define_effect(data_example, effect = effect, id = id, tx = tx)
+effect_object <- define_effect(data_example, effect = "effect", id = "id", tx = "tx")
 
 class(effect_object)
 

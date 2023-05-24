@@ -59,7 +59,7 @@ Before getting the incremental cost effectivness ratio, it is good practice to e
 
 First examine incremental costs. The `define_cost` function takes a vector of costs related to an individual id, and the associated treatment value. 
 ```{r}
-cost_object <- define_cost(data_example, cost = cost, id = id, tx = tx)
+cost_object <- define_cost(data_example, cost = "cost", id = "id", tx = "tx")
 print(cost_object)
 ```
 
@@ -82,7 +82,7 @@ plot(cost_object, type = "regression")
 
 Incremental effects can be found in the same way. 
 ```{r}
-effect_object <- define_effect(data_example, effect = effect, id = id, tx = tx)
+effect_object <- define_effect(data_example, effect = "effect", id = "id", tx = "tx")
 print(effect_object)
 
 ## Plotting
@@ -97,7 +97,7 @@ Since we have age and sex in our dataset and we believe that those factors can i
 
 THe function takes a list of the vectors for each covariate in the dataset. The *names* argument is the name of the covariate in the order listed. The *id* argument is used to link the individual's data throughout the package's functions. 
 ```{r}
-covariates <- define_covariates(data_frame = data_example, covariates_names = c("age", "sex"), id = id)
+covariates <- define_covariates(data_frame = data_example, covariates_names = c("age", "sex"), id = "id")
 covariates
 ```
 

@@ -1,6 +1,6 @@
 data(data_example, package = "personlevelEE")
 
-effect_object <- define_effect(data_example, effect = effect, id = id, tx = tx)
+effect_object <- define_effect(data_example, effect = "effect", id = "id", tx = "tx")
 
 class(effect_object)
 

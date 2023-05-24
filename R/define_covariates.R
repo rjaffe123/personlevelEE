@@ -3,7 +3,7 @@
 #' Takes a list of covariates and stores them for future use.
 #'
 #' @param data_frame a data frame that contains the following information
-#' @param id name of ID column
+#' @param id (string) name of ID column
 #' @param covariate_names a list of the names of columns corresponding to the covariates
 #' @param cluster name of clustering variable
 #'
@@ -14,9 +14,8 @@
 #'
 define_covariates <- function(data_frame, covariates_names, id, cluster = "none"){
   covariates <- data_frame %>%dplyr::select(covariates_names)
-  col_ids <- deparse(substitute(id, environment()))
+  col_ids <- toString(id)
   id <- data_frame[, colnames(data_frame)==col_ids]
-
   covariate_df <- data.frame(id, covariates)
 
   if (cluster != "none"){

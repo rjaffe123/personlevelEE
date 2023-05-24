@@ -6,9 +6,9 @@
 #' A simple linear regression will evaluate the difference in effect between treatment status.
 #'
 #' @param data_frame dataframe that contains the information
-#' @param effect name of effect column
-#' @param id name of ID column
-#' @param tx name of treatment column
+#' @param effect (string) name of effect column
+#' @param id (string) name of ID column
+#' @param tx (string) name of treatment column
 #' @param control Value/Name associated to one treatment (control), default = 0
 #' @param treatment Value/Name associated to the other treatment (comparator), default = 1
 #'
@@ -17,11 +17,11 @@
 #'
 #' @example inst/examples/example_define_effect.R
 define_effect <- function(data_frame, effect, id, tx, control = 0, treatment = 1) {
-  col_effect <- deparse(substitute(effect, environment()))
-  effect <- data_frame[, colnames(data_frame)==col_effect]
-  col_ids <- deparse(substitute(id, environment()))
+  col_effect <- toString(effect)
+  effect<- data_frame[, colnames(data_frame)==col_effect]
+  col_ids <- toString(id)
   id <- data_frame[, colnames(data_frame)==col_ids]
-  col_tx <- deparse(substitute(tx, environment()))
+  col_tx <- toString(tx)
   tx <- data_frame[, colnames(data_frame)==col_tx]
   data_effect <- data.frame(effect = effect, id = id, tx = tx)
 

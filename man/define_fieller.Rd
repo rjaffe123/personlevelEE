@@ -20,9 +20,9 @@ Function uses Fieller's theorem to define values to create a confidence interval
 \examples{
 data(data_example, package = "personlevelEE")
 
-cost_object <- define_cost(data_example, cost = cost, id = id, tx = tx)
+cost_object <- define_cost(data_example, cost = "cost", id = "id", tx = "tx")
 
-effect_object <- define_effect(data_example, effect = effect, id = id, tx = tx)
+effect_object <- define_effect(data_example, effect = "effect", id = "id", tx = "tx")
 
 fieller <- define_fieller(cost = cost_object, effect = effect_object)
 

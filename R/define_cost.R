@@ -6,9 +6,9 @@
 #' A simple linear regression will evaluate the difference in cost between treatment status.
 #'
 #' @param data_frame a data frame that contains the following information
-#' @param cost name of column that has cost data
-#' @param id name of ID column
-#' @param tx name of treatment column
+#' @param cost (string) name of column that has cost data
+#' @param id (string) name of ID column
+#' @param tx (string) name of treatment column
 #' @param control Value/Name associated to one treatment (control), default = 0
 #' @param treatment Value/Name associated to the other treatment (comparator), default = 1
 #'
@@ -17,14 +17,17 @@
 #'
 #' @example inst/examples/example_define_cost.R
 define_cost <- function(data_frame, cost, id, tx, control = 0, treatment = 1){
-  col_cost <- deparse(substitute(cost, environment()))
+  col_cost <- toString(cost)
+  #col_cost <- deparse(substitute(cost, environment()))
   cost<- data_frame[, colnames(data_frame)==col_cost]
-  col_ids <- deparse(substitute(id, environment()))
+  #col_ids <- deparse(substitute(id, environment()))
+  col_ids <- toString(id)
   id <- data_frame[, colnames(data_frame)==col_ids]
-  col_tx <- deparse(substitute(tx, environment()))
+  #col_tx <- deparse(substitute(tx, environment()))
+  col_tx <- toString(tx)
   tx <- data_frame[, colnames(data_frame)==col_tx]
   data_cost <- data.frame(cost = cost, id = id, tx = tx)
-
+  print(data_cost)
   ## errors:
   ## if treatment vector not 2 values
   if (nlevels(as.factor(tx))>2){

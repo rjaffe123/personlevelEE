@@ -18,11 +18,12 @@ an object of the run_INB_model class
 The function will calculate the incremental net benefit based on the lambda from \code{\link[=define_NB]{define_NB()}}.
 }
 \examples{
+library(tidyverse)
 data(data_example, package = "personlevelEE")
 
-cost_object <- define_cost(data_example, cost = cost, id = id, tx = tx)
+cost_object <- define_cost(data_example, cost = "cost", id = "id", tx = "tx")
 
-effect_object <- define_effect(data_example, effect = effect, id = id, tx = tx)
+effect_object <- define_effect(data_example, effect = "effect", id = "id", tx = "tx")
 
 ##add cluster variable
 data_example <- data_example \%>\% mutate(cluster_v = sample(1:4, length(data_example$tx), replace = TRUE))
@@ -32,7 +33,7 @@ covariates <- define_covariates(data_frame = data_example, covariates_names = c(
 nb_value <- define_NB(lambdas = c(100, 350, 1000, 10000),
                       cost = cost_object, effect = effect_object)
 
-nb_model <- run_INB_model(nb_value, covariates = covariates_list)
+nb_model <- run_INB_model(nb_value, covariates = covariates)
 
 print(nb_model)
 

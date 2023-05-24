@@ -9,11 +9,11 @@ define_cost(data_frame, cost, id, tx, control = 0, treatment = 1)
 \arguments{
 \item{data_frame}{a data frame that contains the following information}
 
-\item{cost}{name of column that has cost data}
+\item{cost}{(string) name of column that has cost data}
 
-\item{id}{name of ID column}
+\item{id}{(string) name of ID column}
 
-\item{tx}{name of treatment column}
+\item{tx}{(string) name of treatment column}
 
 \item{control}{Value/Name associated to one treatment (control), default = 0}
 
@@ -32,7 +32,7 @@ A simple linear regression will evaluate the difference in cost between treatmen
 \examples{
 data(data_example, package = "personlevelEE")
 
-cost_object <- define_cost(data_example, cost = cost, id = id, tx = tx)
+cost_object <- define_cost(data_example, cost = "cost", id = "id", tx = "tx")
 
 class(cost_object)
 
