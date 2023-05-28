@@ -14,7 +14,8 @@
 #'
 define_covariates <- function(data_frame, covariates_names, id, cluster = "none"){
   covariates <- data_frame %>%dplyr::select(covariates_names)
-  col_ids <- toString(id)
+  #col_ids <- toString(id)
+  col_ids <- deparse(substitute(id, environment()))
   id <- data_frame[, colnames(data_frame)==col_ids]
   covariate_df <- data.frame(id, covariates)
 

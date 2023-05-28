@@ -17,30 +17,28 @@
 #'
 #' @example inst/examples/example_define_cost.R
 define_cost <- function(data_frame, cost, id, tx, control = 0, treatment = 1){
-  col_cost <- toString(cost)
-  #col_cost <- deparse(substitute(cost, environment()))
+  col_cost <- deparse(substitute(cost, environment()))
   cost<- data_frame[, colnames(data_frame)==col_cost]
-  #col_ids <- deparse(substitute(id, environment()))
-  col_ids <- toString(id)
+  col_ids <- deparse(substitute(id, environment()))
+  #col_ids <- toString(id)
   id <- data_frame[, colnames(data_frame)==col_ids]
-  #col_tx <- deparse(substitute(tx, environment()))
-  col_tx <- toString(tx)
+  col_tx <- deparse(substitute(tx, environment()))
+  #col_tx <- toString(tx)
   tx <- data_frame[, colnames(data_frame)==col_tx]
   data_cost <- data.frame(cost = cost, id = id, tx = tx)
-  print(data_cost)
-  ## errors:
-  ## if treatment vector not 2 values
-  if (nlevels(as.factor(tx))>2){
-    stop("Treatment vector cannot have more than 2 values.")
-  }
-  ## if effect & id not same length
-  if (length(data_cost$cost) != length(data_cost$id)){
-    stop("Cost and ID are not the same length")
-  }
-  ## if id values not numerical
-  if (!is.numeric(data_cost$id)){
-    stop("IDs need to be a numerical vector")
-  }
+  # ## errors:
+  # ## if treatment vector not 2 values
+  # if (nlevels(as.factor(tx))>2){
+  #   stop("Treatment vector cannot have more than 2 values.")
+  # }
+  # ## if effect & id not same length
+  # if (length(data_cost$cost) != length(data_cost$id)){
+  #   stop("Cost and ID are not the same length")
+  # }
+  # ## if id values not numerical
+  # if (!is.numeric(data_cost$id)){
+  #   stop("IDs need to be a numerical vector")
+  # }
   ## perform linear regression
   data_cost <- data_cost |> dplyr::mutate(tx = dplyr::case_when(
     tx == control ~ "control",

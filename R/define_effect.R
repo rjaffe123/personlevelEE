@@ -17,27 +17,29 @@
 #'
 #' @example inst/examples/example_define_effect.R
 define_effect <- function(data_frame, effect, id, tx, control = 0, treatment = 1) {
-  col_effect <- toString(effect)
+  col_effect <- deparse(substitute(effect, environment()))
   effect<- data_frame[, colnames(data_frame)==col_effect]
-  col_ids <- toString(id)
+  col_ids <- deparse(substitute(id, environment()))
+  #col_ids <- toString(id)
   id <- data_frame[, colnames(data_frame)==col_ids]
-  col_tx <- toString(tx)
+  col_tx <- deparse(substitute(tx, environment()))
+  #col_tx <- toString(tx)
   tx <- data_frame[, colnames(data_frame)==col_tx]
-  data_effect <- data.frame(effect = effect, id = id, tx = tx)
+  data_effect <- data.frame(effect= effect, id = id, tx = tx)
 
    ## errors:
   ## if treatment vector not 2 values
-  if (nlevels(as.factor(tx))>2){
-    stop("Treatment vector cannot have more than 2 values.")
-  }
-  ## if effect & id not same length
-  if (length(data_effect$effect) != length(data_effect$id)){
-    stop("Effect and ID are not the same length")
-  }
-  ## if id values not numerical
-  if (!is.numeric(data_effect$id)){
-    stop("IDs need to be a numerical vector")
-  }
+  # if (nlevels(as.factor(tx))>2){
+  #   stop("Treatment vector cannot have more than 2 values.")
+  # }
+  # ## if effect & id not same length
+  # if (length(data_effect$effect) != length(data_effect$id)){
+  #   stop("Effect and ID are not the same length")
+  # }
+  # ## if id values not numerical
+  # if (!is.numeric(data_effect$id)){
+  #   stop("IDs need to be a numerical vector")
+  # }
   ## perform linear regression
   data_effect <- data_effect |> dplyr::mutate(tx = dplyr::case_when(
                                               tx == control ~ "control",
