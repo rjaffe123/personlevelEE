@@ -8,7 +8,7 @@ effect_object <- define_effect(data_example, effect = effect, id = id, tx = tx)
 
 bootstrap <- run_bootstrap(n=1000, cost = cost_object,
                            effect = effect_object, lambda_min = 10,
-                           lambda_max = 10000, breaks = 4)
+                           lambda_max = 10000, breaks = 4, seed_number = 420)
 
 plot(bootstrap, type = "cloud", bw =TRUE)
 plot(bootstrap, type = "ceac", bw = TRUE)

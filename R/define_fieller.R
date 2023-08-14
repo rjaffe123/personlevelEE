@@ -99,31 +99,31 @@ plot.define_fieller <- function(x, CI = FALSE, bw = FALSE, ...){
         xvalue = c(mean(x$data$delta_e75, na.rm = TRUE), mean(x$data$delta_e75, na.rm=TRUE)/2),
         label = c(paste0("UL = ", round(x$data$ul[1], 2)), paste0("LL = ", round(x$data$ll[1], 2)))
     )
-    plot1<-x$data |> ggplot2::ggplot() +ggplot2::geom_path(aes(x = delta_e95, y = delta_c95, color = "red")) +
-    ggplot2::geom_path(aes(x = delta_e75, y = delta_c75, color = "blue")) +
-    ggplot2::geom_path(aes(x = delta_e50, y = delta_c50, color = "green")) +
+    plot1<-x$data |> ggplot2::ggplot() +ggplot2::geom_path(aes(x = delta_e95, y = delta_c95, color = "a")) +
+    ggplot2::geom_path(aes(x = delta_e75, y = delta_c75, color = "b")) +
+    ggplot2::geom_path(aes(x = delta_e50, y = delta_c50, color = "c")) +
     ggplot2::geom_point(aes(x = de, y = dc), color = "black") +
     ggplot2::geom_vline(xintercept = 0, color ="grey") +
     ggplot2::geom_hline(yintercept = 0, color = "grey") +
     ggplot2::xlab(expression(Delta*"E"))+ggplot2::ylab(expression(Delta*"C"))+
-    ggplot2::scale_colour_manual(name = 'Confidence Interval',
-                        values =c('red'='red','blue'='blue','green'='green'), labels = c('95%','75%','50%')) +
+      ggplot2::scale_colour_manual(name = 'Confidence Interval',
+                                   values =c('a'='red','b'='green', 'c'='blue'), labels = c('95%','75%','50%')) +
     ggplot2::theme(axis.text.y = ggplot2::element_text(angle = 0, vjust = 0.5, hjust=1))+
     ggplot2::geom_abline(slope = x$data$ul[1], linetype="dotted", show.legend = TRUE)+
     ggplot2::geom_abline(slope = x$data$ll[1], linetype="dotted", show.legend = TRUE)+
     ggplot2::geom_label(data = label, aes(label = label, x = xvalue, y = yvalue))
     }
     else{
-      plot1<-x$data |> ggplot2::ggplot() +ggplot2::geom_path(aes(x = delta_e95, y = delta_c95, color = "red")) +
-        ggplot2::geom_path(aes(x = delta_e75, y = delta_c75, color = "blue")) +
-        ggplot2::geom_path(aes(x = delta_e50, y = delta_c50, color = "green")) +
+      plot1<-x$data |> ggplot2::ggplot() +ggplot2::geom_path(aes(x = delta_e95, y = delta_c95, color = "a")) +
+        ggplot2::geom_path(aes(x = delta_e75, y = delta_c75, color = "b")) +
+        ggplot2::geom_path(aes(x = delta_e50, y = delta_c50, color = "c")) +
         ggplot2::geom_point(aes(x = de, y = dc), color = "black") +
         ggplot2::geom_vline(xintercept = 0, color ="grey") +
         ggplot2::geom_hline(yintercept = 0, color = "grey") +
         ggplot2::xlab(expression(Delta*"E"))+ggplot2::ylab(expression(Delta*"C"))+
         ggplot2::scale_colour_manual(name = 'Confidence Interval',
-                                     values =c('red'='red','blue'='blue','green'='green'), labels = c('95%','75%','50%')) +
-        ggplot2::theme(axis.text.y = ggplot2::element_text(angle = 0, vjust = 0.5, hjust=1))
+                     values =c('a'='red','b'='green', 'c'='blue'), labels = c('95%','75%','50%')) +
+        ggplot2::theme(axis.text.y = ggplot2::element_text(angle = 0, vjust = 0.5, hjust=1), legend.position = "right")
 
     }
   if (bw) {

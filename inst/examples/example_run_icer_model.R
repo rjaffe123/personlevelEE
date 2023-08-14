@@ -6,7 +6,7 @@ effect_object <- define_effect(data_example, effect = effect, id = id, tx = tx)
 covariates <- define_covariates(data_frame = data_example, covariates_names = c("age", "sex"), id = id)
 
 icer_model <- run_icer_model(cost_object, effect_object,
-                             covariates = covariates, interaction = FALSE)
+                             covariates = covariates, interaction = TRUE)
 
 print(icer_model)
 

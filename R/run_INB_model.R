@@ -24,7 +24,7 @@ run_INB_model <- function(nb_values, covariates = NULL) {
   data <- dplyr::left_join(data, covariates$data_covariates, by = c("id"))
   data_lm <- data |> dplyr::select(-c(id, cost, effect))
   for (name in nb_values$column_names){
-    lm1 <- lapply(list(c("tx", covariates$names)), function(x) lm(reformulate(x, response = name), data = data_lm))
+    lm1 <- lapply(list(c("tx", covariates$covariatenames)), function(x) lm(reformulate(x, response = name), data = data_lm))
     lm1 <- lm1[[1]]
     model_list[[name]] <- lm1
   }
@@ -32,7 +32,8 @@ run_INB_model <- function(nb_values, covariates = NULL) {
 
   structure(
     list(data_inb = data,
-         model_inb = model_list
+         model_inb = model_list,
+         lambda = nb_value$lambda
     ),
     class = "run_inb_model"
   )
@@ -199,7 +200,7 @@ plot.run_inb_model <- function (x, type = c("regression", "barchart", "boxplot",
 print.run_inb_model <- function(x, ...) {
 
   cat("\n", "The full INB regression results are below. ")
-  stargazer::stargazer(x$model_inb, type = "text", dep.var.labels = c(""), column.labels = paste0("\\lambda = ", as.character(x$lambda)),
+  stargazer::stargazer(x$model_inb, type = "text", dep.var.labels = c(""), column.labels = paste0("$\\lambda$ = ", as.character(x$lambda)),
                        dep.var.caption = "Dependent variable: net benefit value", omit.stat=c("LL","ser","f"), ci=TRUE, ci.level=0.95, intercept.bottom = FALSE)
 
 }

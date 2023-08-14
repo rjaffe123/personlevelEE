@@ -20,7 +20,7 @@ define_covariates <- function(data_frame, covariates_names, id, cluster = "none"
   covariate_df <- data.frame(id, covariates)
 
   if (cluster != "none"){
-    cluster_col <- data_frame %>%dplyr::select(cluster)
+    cluster_col <- data_frame %>% dplyr::select(cluster)
     covariate_df <- cbind(covariate_df, cluster_col)
   }
 

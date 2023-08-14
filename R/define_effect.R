@@ -78,12 +78,12 @@ print.define_effect <- function (x, ...){ ## add t test results
 
   cat("\n",'The average effect (std. dev) for the control group is: ', round(x$final_model$coefficients[1], 3), "(", sd(subset(x$data_effect, x$data_effect$tx =="control")$effect), ")")
   cat("\n","The average effect (std. dev) for the treatment group is ", round(x$final_model$coefficients[1] + x$final_model$coefficients[2], 3), "(", sd(subset(x$data_effect, x$data_effect$tx =="treatment")$effect), ")")
-  cat("\n","The incremental effect difference (95% CI) is: ", round(x$final_model$coefficients[2], 3), "(", x$ttest$conf.int[1], ", ", x$ttest$conf.int[2], ")")
+  cat("\n","The incremental effect difference (95% CI) is: ", round(x$final_model$coefficients[2], 3), "(", confint(x$final_model)[2], ", ", confint(x$final_model)[4], ")")
   cat("\n", "The p-value from a two sided t-test with an alternative hypothesis of true difference in means is not equal to 0 is: ", x$ttest$p.value)
   cat("\n", 'The regression call is: Effect = beta0 + beta1(Treatment), where beta1 is a flag depending on the treatment status of the individual.')
   cat("\n", "The full OLS regression results are below. ")
   stargazer::stargazer(x$final_model, type="text", covariate.labels=c("Intercept (Control Average)", "Incremental Difference"),
-                       omit.stat=c("LL","ser","f"), ci=TRUE, ci.level=0.95, single.row=TRUE, intercept.bottom = FALSE)
+                       omit.stat=c("LL","ser","f"), ci.custom = list(confint(x$final_model)), single.row=TRUE, intercept.bottom = FALSE)
 }
 
 

@@ -43,13 +43,14 @@ run_icer_model <- function(cost, effect, covariates = NULL, interaction = FALSE,
       data_lm_cost <- data_cost |> dplyr::select(-c(id))
       data_lm_effect <- data_effect |> dplyr::select(-c(id))
       if (interaction == TRUE){## covariates + linear model + interaction terms
-        interaction_terms <- do.call(paste, c(as.list(covariates$names), sep = ":"))
-        cost_lm <- lapply(list(c("tx", covariates$names, interaction_terms)), function(x) lm(reformulate(x, response = "cost"), data = data_lm_cost))
-        effect_lm <- lapply(list(c("tx", covariates$names, interaction_terms)), function(x) lm(reformulate(x, response = "effect"), data = data_lm_effect))
+        interaction_terms <- do.call(paste, c(as.list(covariates$covariatenames), sep = ":"))
+        print(paste("Interaction terms are: ", interaction_terms))
+        cost_lm <- lapply(list(c("tx", covariates$covariatenames, interaction_terms)), function(x) lm(reformulate(x, response = "cost"), data = data_lm_cost))
+        effect_lm <- lapply(list(c("tx", covariates$covariatenames, interaction_terms)), function(x) lm(reformulate(x, response = "effect"), data = data_lm_effect))
       }
       else {## covariates + linear model
-        cost_lm <- lapply(list(c("tx", covariates$names)), function(x) lm(reformulate(x, response = "cost"), data = data_lm_cost))
-        effect_lm <- lapply(list(c("tx", covariates$names)), function(x) lm(reformulate(x, response = "effect"), data = data_lm_effect))
+        cost_lm <- lapply(list(c("tx", covariates$covariatenames)), function(x) lm(reformulate(x, response = "cost"), data = data_lm_cost))
+        effect_lm <- lapply(list(c("tx", covariates$covariatenames)), function(x) lm(reformulate(x, response = "effect"), data = data_lm_effect))
       }
   }
 
@@ -86,32 +87,32 @@ run_icer_model <- function(cost, effect, covariates = NULL, interaction = FALSE,
 #' @export
 #'
 print.run_icer_model <- function(x, ...) {
-
+  cc <- lapply(list(x$cost_lm, x$effect_lm), function(x) confint(x))
   cat("\n", "The full ICER regression(s) results are below. ")
   stargazer::stargazer(x$cost_lm, x$effect_lm, type="text",
-                       omit.stat=c("LL","ser","f"), ci=TRUE, ci.level=0.95, intercept.bottom = FALSE, dep.var.labels = c(""), column.labels = c("Cost", "Effect"))
+                       omit.stat=c("LL","ser","f"), ci.custom = cc, intercept.bottom = FALSE, dep.var.labels = c(""), column.labels = c("Cost", "Effect"))
 
 }
 
 #' Print a summary table of ICER
 #'
-#' @param object a [run_icer_model()] object
+#' @param x a [run_icer_model()] object
 #' @param ... additional arguments affecting the summary produced.
 #'
 #' @return a tibble
 #' @export
 #'
-summary.run_icer_model <- function(object, ...) {
-  tx1_name <- names(table(object$data_total$tx)[1])
-  tx2_name <- names(table(object$data_total$tx)[2])
-  means_tx1 <- object$data_total |> dplyr::filter(tx == tx1_name) |> dplyr::summarize(mean_cost = mean(cost, na.rm = TRUE), mean_effect = mean(effect, na.rm = TRUE))
-  means_tx2 <- object$data_total |> dplyr::filter(tx == tx2_name) |> dplyr::summarize(mean_cost = mean(cost, na.rm = TRUE), mean_effect = mean(effect, na.rm = TRUE))
+summary.run_icer_model <- function(x, ...) {
+  tx1_name <- names(table(x$data_total$tx)[1])
+  tx2_name <- names(table(x$data_total$tx)[2])
+  means_tx1 <- x$data_total |> dplyr::filter(tx == tx1_name) |> dplyr::summarize(mean_cost = mean(cost, na.rm = TRUE), mean_effect = mean(effect, na.rm = TRUE))
+  means_tx2 <- x$data_total |> dplyr::filter(tx == tx2_name) |> dplyr::summarize(mean_cost = mean(cost, na.rm = TRUE), mean_effect = mean(effect, na.rm = TRUE))
 
   tb <- tibble::tibble("strategy" = c(tx1_name, tx2_name),
                "average cost" = c(round(means_tx1$mean_cost,3), round(means_tx2$mean_cost,3)),
-              "incremental cost" = c("----", round(object$cost_lm$coefficients[2],3)),
+              "incremental cost" = c("----", round(x$cost_lm$coefficients[2],3)),
               "average effect" = c(round(means_tx1$mean_effect,3), round(means_tx2$mean_effect, 3)),
-              "incremental effect" = c("----", round(object$effect_lm$coefficients[2], 3)),
+              "incremental effect" = c("----", round(x$effect_lm$coefficients[2], 3)),
               "ICER" = c("----", round(object$icer, 3))
               )
   tb

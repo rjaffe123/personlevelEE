@@ -13,7 +13,11 @@
 #' @export
 #'
 #' @example inst/examples/example_run_bootstrap.R
-run_bootstrap <- function(n = 1000, cost, effect, lambda_min = 0, lambda_max = 10000, breaks = 5){
+run_bootstrap <- function(n = 1000, cost, effect, lambda_min = 0, lambda_max = 10000, breaks = 5, seed_number = NULL){
+  if (!is.null(seed_number)){
+    set.seed(seed_number)
+    print(paste0("Setting seed number: ", seed_number))
+  }
   r_squared <- function(formula, data, indices) {
     val <- data[indices,] # selecting sample with boot
     fit <- lm(formula, data=val)
