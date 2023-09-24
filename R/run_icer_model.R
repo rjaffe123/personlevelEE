@@ -13,7 +13,7 @@
 #' @export
 #'
 #' @example inst/examples/example_run_icer_model.R
-run_icer_model <- function(cost, effect, covariates = NULL, interaction = FALSE, method = "linear"){
+run_icer_model <- function(cost, effect, covariates = NULL, interaction = NULL, method = "linear"){
 
   if (is.null(covariates)){ ## no covariates
     data_cost <- cost$data_cost
@@ -42,11 +42,35 @@ run_icer_model <- function(cost, effect, covariates = NULL, interaction = FALSE,
     if (method == "linear"){
       data_lm_cost <- data_cost |> dplyr::select(-c(id))
       data_lm_effect <- data_effect |> dplyr::select(-c(id))
-      if (interaction == TRUE){## covariates + linear model + interaction terms
-        interaction_terms <- do.call(paste, c(as.list(covariates$covariatenames), sep = ":"))
-        print(paste("Interaction terms are: ", interaction_terms))
-        cost_lm <- lapply(list(c("tx", covariates$covariatenames, interaction_terms)), function(x) lm(reformulate(x, response = "cost"), data = data_lm_cost))
-        effect_lm <- lapply(list(c("tx", covariates$covariatenames, interaction_terms)), function(x) lm(reformulate(x, response = "effect"), data = data_lm_effect))
+      if (!is.null(interaction)){## covariates + linear model + interaction terms
+        #combos <- do.call("c", lapply(seq_along(interaction), function(i) combn(interaction, i, FUN = list)))
+        if(length(interaction) > 2){
+          combos <- as.data.frame(t(combn(interaction,length(interaction)-1)))
+          choice <- readline("Which interaction term combination? If all terms interact, enter 99: ")
+          print(combos)
+          if (choice !=99){
+            terms <- combos[choice, ]
+            interaction_terms <- do.call(paste, c(as.list(terms), sep = ":"))
+            print(paste("Interaction terms are: ", interaction_terms))
+            cost_lm <- lapply(list(c("tx", covariates$covariatenames, interaction_terms)), function(x) lm(reformulate(x, response = "cost"), data = data_lm_cost))
+            effect_lm <- lapply(list(c("tx", covariates$covariatenames, interaction_terms)), function(x) lm(reformulate(x, response = "effect"), data = data_lm_effect))
+
+          }
+          else{
+            interaction_terms <- do.call(paste, c(as.list(interaction), sep = ":"))
+            print(paste("Interaction terms are: ", interaction_terms))
+            cost_lm <- lapply(list(c("tx", covariates$covariatenames, interaction_terms)), function(x) lm(reformulate(x, response = "cost"), data = data_lm_cost))
+            effect_lm <- lapply(list(c("tx", covariates$covariatenames, interaction_terms)), function(x) lm(reformulate(x, response = "effect"), data = data_lm_effect))
+          }
+
+        }
+        else{
+          interaction_terms <- do.call(paste, c(as.list(interaction), sep = ":"))
+          print(paste("Interaction terms are: ", interaction_terms))
+          cost_lm <- lapply(list(c("tx", covariates$covariatenames, interaction_terms)), function(x) lm(reformulate(x, response = "cost"), data = data_lm_cost))
+          effect_lm <- lapply(list(c("tx", covariates$covariatenames, interaction_terms)), function(x) lm(reformulate(x, response = "effect"), data = data_lm_effect))
+        }
+
       }
       else {## covariates + linear model
         cost_lm <- lapply(list(c("tx", covariates$covariatenames)), function(x) lm(reformulate(x, response = "cost"), data = data_lm_cost))
