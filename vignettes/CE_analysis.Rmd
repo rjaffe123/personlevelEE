@@ -108,7 +108,7 @@ To get a value for icer we will use `run_icer_model()`. The regression results a
 
 ```{r}
 icer_model <- run_icer_model(cost = cost_object, effect = effect_object,
-                             covariates = NULL, interaction = FALSE)
+                             covariates = NULL, interaction = c("age", "sex"))
 
 print(icer_model)
 ```
